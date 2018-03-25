@@ -19,7 +19,7 @@ public class Main {
         return String.format(template, name);
     }
 
-    @RequestMapping("/test")
+    @RequestMapping("/testPath")
     @ResponseBody
     public String test() {
         return "simple test";

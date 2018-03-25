@@ -1,28 +1,51 @@
-<head>
+<head xmlns="">
     <meta charset="UTF-8">
-    <title>Leaflet sample</title>
-    <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
-    <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <title>StraysWonderland</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <link rel="stylesheet" href="style/main.css"/>
 </head>
 
 <body>
-<div id = "map" style = "width: 1980px; height: 1024px"></div>
+<div id="map" style="width: auto; height: 90%"></div>
+<div id="buttonPanel" style="width: auto; height: 10%">
+    <button onclick="PathFunction()">calculate Path</button>
+</div>
 <script>
-    // Creating map options
+    // Creating map
     var mapOptions = {
         center: [48.77391, 9.17408],
         zoom: 15
     }
-
-    // Creating a map object
     var map = new L.map('map', mapOptions);
 
-    // Creating a Layer object
     var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-
-    // Adding layer to the map
     map.addLayer(layer);
+
+</script>
+
+<script id="leftClickFunction">
+    var marker = L.marker();
+    var markerDest = L.marker([48.77391, 9.17408]).addTo(map);
+    var latlngs = [
+        [17.385044, 78.486671],
+        [16.506174, 80.648015]
+    ];
+    var path = L.polyline(latlngs);
+
+    function onMapClick(e) {
+        map.removeLayer(path);
+        marker.setLatLng(e.latlng).addTo(map);
+    }
+
+    map.on('click', onMapClick);
+
+    function PathFunction(e) {
+        var pointList = [marker.getLatLng(), markerDest.getLatLng()];
+        path = L.polyline(pointList);
+        path.addTo(map);
+
+    }
 </script>
 </body>
-
 </html>
