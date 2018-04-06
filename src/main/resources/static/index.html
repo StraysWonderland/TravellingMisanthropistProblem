@@ -1,22 +1,56 @@
 <head xmlns="">
     <meta charset="UTF-8">
+    <meta name="author" content="Stray"/>
+    <meta name="description" content="TravellingMisanthropistProblem"/>
     <title>StraysWonderland</title>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <!-- leaflet CSS CDN -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
     <link rel="stylesheet" href="style/main.css"/>
 </head>
 
 <body>
-<div id="map" style="width: auto; height: 90%"></div>
-<div id="buttonPanel" style="width: auto; height: 10%">
-    <button onclick="PathFunction()">calculate Path</button>
+<div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Travelling Misanthropist Problem</h3>
+        </div>
+        <button type="button" id="pathButton" class="btn btn-info navbar-btn" onclick="PathFunction()">
+            <i class="glyphicon glyphicon-align-left"></i>
+            calculate Path
+        </button>
+        <ul class="list-unstyled components">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li>
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                </ul>
+        </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content">
+        <div class="container" id="map" style="width: 1980px; height: 1024px"></div>
+    </div>
+
 </div>
+
+
 <script>
     // Creating map
     var mapOptions = {
         center: [48.77391, 9.17408],
         zoom: 15
-    }
+    };
     var map = new L.map('map', mapOptions);
 
     var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
@@ -24,28 +58,11 @@
 
 </script>
 
-<script id="leftClickFunction">
-    var marker = L.marker();
-    var markerDest = L.marker([48.77391, 9.17408]).addTo(map);
-    var latlngs = [
-        [17.385044, 78.486671],
-        [16.506174, 80.648015]
-    ];
-    var path = L.polyline(latlngs);
 
-    function onMapClick(e) {
-        map.removeLayer(path);
-        marker.setLatLng(e.latlng).addTo(map);
-    }
-
-    map.on('click', onMapClick);
-
-    function PathFunction(e) {
-        var pointList = [marker.getLatLng(), markerDest.getLatLng()];
-        path = L.polyline(pointList);
-        path.addTo(map);
-
-    }
-</script>
+<script src="scripts/mapInteraction.js"></script>
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<!-- Bootstrap Js CDN -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 </html>
