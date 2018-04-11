@@ -24,12 +24,6 @@ public class GraphManager {
     HashMap<Long, double[]> nodeLookup;
 
 
-    private int bwNodes = 39472043;
-    private int bwEdges = 6512512;
-
-    private int gerNodes = 281953971;
-    private int gerEdges = 45435193;
-
     private int numNodes = 39472043;
     private int numEdges = 52325469;
 
@@ -37,9 +31,10 @@ public class GraphManager {
     InputStream stream;
 
     public GraphManager() {
-//        edges = new int[3][numEdges];
-//        nodes = new int[3][numNodes];
-//        offset = new int[numNodes]; Arrays.fill(offset, -1);
+        edges = new int[3][numEdges];
+        nodes = new double[3][numNodes];
+        offset = new int[numNodes];
+        Arrays.fill(offset, -1);
         nodeLookup = new HashMap<>();
 
     }
@@ -74,7 +69,6 @@ public class GraphManager {
             if (container.getType() == EntityType.Way) {
                 OsmWay currentEdge = (OsmWay) container.getEntity();
                 if (isHighway(currentEdge)) {
-
                     for (int i = 0; i < currentEdge.getNumberOfNodes(); i++) {
                         nodeLookup.put(currentEdge.getNodeId(i), new double[]{});
                         System.out.println("relevant node added: " + currentEdge.getNodeId(i));
@@ -116,14 +110,17 @@ public class GraphManager {
             localId++;
         }
 
-    /*  Beautyful but unusable lambda </3
+        //region Beautyful but unusable lambda </3
+        /*
         nodeLookup.forEach((key, valueArray) -> {
             nodes[localIdCount][0] = valueArray[1];
             nodes[localIdCount][0] = valueArray[2];
             nodeLookup.put(key, new double[]{(double) localIdCount, 0, 0});
             localIdCount++;
         });
-    */
+        */
+        //endregion
+
     }
 
     private void retrieveEdgesBetweenNodes() {
@@ -142,12 +139,9 @@ public class GraphManager {
 
     private void convertToEdgeStructure(OsmWay way) {
         for (int i = 0; i < way.getNumberOfNodes() - 1; i++) {
-            double[] currentEdge = new double[5];
-
-            currentEdge[0] = nodeLookup.get(way.getNodeId(i))[0];
-            currentEdge[1] = nodeLookup.get(way.getNodeId(i + 1))[0];
-
-            edgeList.add(currentEdge);
+            edges[i][0] = (int) nodeLookup.get(way.getNodeId(i))[0];
+            edges[i][1] = (int) nodeLookup.get(way.getNodeId(i + 1))[0];
+            // TODO calculate distance
         }
     }
 
