@@ -151,6 +151,10 @@ public class GraphManager {
         }
     }
 
+    private void sortEdges() {
+        java.util.Arrays.sort(edges, (a, b) -> (Integer.compare(a[0], b[0])));
+    }
+
     private boolean isHighway(OsmWay way) {
         List<String> desiredHighwayTypes = Arrays.asList(
                 "motorway",
