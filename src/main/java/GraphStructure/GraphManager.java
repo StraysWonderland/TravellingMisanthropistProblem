@@ -105,19 +105,19 @@ public class GraphManager {
 
     private void localiseAndSortNodes() {
         nodeList = new ArrayList<>(nodeLookup.values());
-        int localId = 0;
-        for (Map.Entry<Long, double[]> entry : nodeLookup.entrySet()) {
-            nodes[0][localId] = entry.getValue()[1];
-            nodes[1][localId] = entry.getValue()[2];
+        Collections.sort(nodeList, (a, b) -> (Double.compare(a[0], b[0])));
+        for (int i = 0; i < nodeList.size(); i++) {
+            nodes[0][i] = nodeList.get(i)[1];
+            nodes[1][i] = nodeList.get(i)[2];
 
-            nodeLookup.put(entry.getKey(), new double[]{
-                    (double) localId, // serves as the localId
-                    0,
-                    0
-            });
-            localId++;
+            nodeLookup.put((long) nodeList.get(i)[0],
+                    new double[]{
+                            (double) i, // serves as localId
+                            (double) 0,
+                            (double) 0
+                    });
         }
-
+        nodeList.clear();
         //region Beautyful but unusable lambda </3
         /*
         nodeLookup.forEach((key, valueArray) -> {
@@ -128,7 +128,6 @@ public class GraphManager {
         });
         */
         //endregion
-
     }
 
     private void retrieveEdgesBetweenNodes() {
