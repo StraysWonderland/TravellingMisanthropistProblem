@@ -23,7 +23,7 @@ public class GraphManager {
     private List<String> barsList = new ArrayList<>();
     HashMap<Long, double[]> nodeLookup;
 
-
+    // nodes currently : 2969443
     private int numNodes = 39472043;
     private int numEdges = 52325469;
 
@@ -36,16 +36,21 @@ public class GraphManager {
         offset = new int[numNodes];
         Arrays.fill(offset, -1);
         nodeLookup = new HashMap<>();
-
     }
 
     public void parseFromPbf() {
         try {
             stream = new FileInputStream(pbfPath);
-
+            retrieveRelevantNodes();
             System.out.println("Looked up relevant nodes");
 
+            stream = new FileInputStream(pbfPath);
+            retrieveDataForNodes();
             System.out.println("Added geo coordinates");
+
+            stream = new FileInputStream(pbfPath);
+            localiseAndSortNodes();
+            System.out.println("localised nodes");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -90,6 +95,9 @@ public class GraphManager {
                             osmNode.getLongitude(),
                     };
                     nodeLookup.put(osmNode.getId(), nodeData);
+                    System.out.println("data for node " + osmNode.getId() + ": "
+                            + "lat: " + nodeData[1]
+                            + "lon: " + nodeData[2]);
                 }
             }
         }
@@ -99,8 +107,8 @@ public class GraphManager {
         nodeList = new ArrayList<>(nodeLookup.values());
         int localId = 0;
         for (Map.Entry<Long, double[]> entry : nodeLookup.entrySet()) {
-            nodes[localId][0] = entry.getValue()[1];
-            nodes[localId][0] = entry.getValue()[2];
+            nodes[0][localId] = entry.getValue()[1];
+            nodes[1][localId] = entry.getValue()[2];
 
             nodeLookup.put(entry.getKey(), new double[]{
                     (double) localId, // serves as the localId
