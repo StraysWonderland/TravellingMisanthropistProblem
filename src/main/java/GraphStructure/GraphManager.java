@@ -14,8 +14,8 @@ import java.io.*;
 import java.util.*;
 
 public class GraphManager {
-    private final String pbfPath = "bw.osm.pbf";
-    private final String binaryPath = "baden-wuerttemberg-map";
+    private final String pbfPath = FilePaths.pbfBW;
+    private final String binaryPath = FilePaths.binBW;
 
     private double[][] nodes;
     private int[][] edges;
