@@ -1,5 +1,8 @@
 package GraphStructure;
 
+import Data.FilePaths;
+import Data.Highway;
+import Data.HighwayType;
 import de.topobyte.osm4j.core.model.iface.EntityContainer;
 import de.topobyte.osm4j.core.model.iface.EntityType;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
@@ -73,7 +76,7 @@ public class GraphManager {
         for (EntityContainer container : iterator) {
             if (container.getType() == EntityType.Way) {
                 OsmWay currentEdge = (OsmWay) container.getEntity();
-                if (isHighway(currentEdge)) {
+                if (Highway.isHighway(OsmModelUtil.getTagsAsMap(currentEdge).get("highway"))) {
                     for (int i = 0; i < currentEdge.getNumberOfNodes(); i++) {
                         nodeLookup.put(currentEdge.getNodeId(i), new double[]{});
                         System.out.println("relevant node added: " + currentEdge.getNodeId(i));
@@ -118,16 +121,6 @@ public class GraphManager {
                     });
         }
         nodeList.clear();
-        //region Beautyful but unusable lambda </3
-        /*
-        nodeLookup.forEach((key, valueArray) -> {
-            nodes[localIdCount][0] = valueArray[1];
-            nodes[localIdCount][0] = valueArray[2];
-            nodeLookup.put(key, new double[]{(double) localIdCount, 0, 0});
-            localIdCount++;
-        });
-        */
-        //endregion
     }
 
     private void retrieveEdgesBetweenNodes() {
@@ -135,7 +128,7 @@ public class GraphManager {
         for (EntityContainer container : iterator) {
             if (container.getType() == EntityType.Way) {
                 OsmWay currentWay = (OsmWay) container.getEntity();
-                if (isHighway(currentWay)) {
+                if (Highway.isHighway(OsmModelUtil.getTagsAsMap(currentWay).get("highway"))) {
                     for (int i = 0; i < currentWay.getNumberOfNodes(); i++) {
                         convertToEdgeStructure(currentWay);
                     }
@@ -156,22 +149,5 @@ public class GraphManager {
         java.util.Arrays.sort(edges, (a, b) -> (Integer.compare(a[0], b[0])));
     }
 
-    private boolean isHighway(OsmWay way) {
-        List<String> desiredHighwayTypes = Arrays.asList(
-                "motorway",
-                "trunk",
-                "primary",
-                "secondary",
-                "residential",
-                "service");
-        String currentType = OsmModelUtil.getTagsAsMap(way).get("highway");
-        if (currentType == null)
-            return false;
-        // Ignore nodes without such a tag
-        if (!desiredHighwayTypes.contains(currentType))
-            return false;
-
-        return true;
-    }
 
 }
