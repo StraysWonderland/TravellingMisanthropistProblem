@@ -1,8 +1,4 @@
 package Data;
-
-import de.topobyte.osm4j.core.model.iface.OsmWay;
-import de.topobyte.osm4j.core.model.util.OsmModelUtil;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +6,7 @@ import java.util.Set;
 
 public class Highway {
 
-    private static List<String> highwayTypesList = Arrays.asList(
+    private static List<String> desiredTypesValues = Arrays.asList(
             "motorway",
             "trunk",
             "primary",
@@ -36,7 +32,7 @@ public class Highway {
             "primary_link",
             "road");
 
-    public static Set<String> desiredHighwayTypes = new HashSet<>(highwayTypesList);
+    public static Set<String> desiredHighwayTypes = new HashSet<>(desiredTypesValues);
 
     public static boolean isHighway(String currentType) {
         if (currentType == null)
