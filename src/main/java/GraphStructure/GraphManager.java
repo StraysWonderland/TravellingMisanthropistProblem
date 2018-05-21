@@ -3,6 +3,7 @@ package GraphStructure;
 import Data.FilePaths;
 import Data.Highway;
 import Data.HighwayType;
+import Util.Distance;
 import de.topobyte.osm4j.core.model.iface.EntityContainer;
 import de.topobyte.osm4j.core.model.iface.EntityType;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
@@ -22,7 +23,6 @@ public class GraphManager {
     private int[] offset;
 
     private List<double[]> edgeList = new ArrayList<>();
-    private List<double[]> nodeList = new ArrayList<>();
     private List<String> barsList = new ArrayList<>();
     HashMap<Long, double[]> nodeLookup;
 
@@ -107,11 +107,11 @@ public class GraphManager {
     }
 
     private void localiseAndSortNodes() {
-        nodeList = new ArrayList<>(nodeLookup.values());
+        List<double[]> nodeList = new ArrayList<>(nodeLookup.values());
         Collections.sort(nodeList, (a, b) -> (Double.compare(a[0], b[0])));
         for (int i = 0; i < nodeList.size(); i++) {
-            nodes[0][i] = nodeList.get(i)[1];
-            nodes[1][i] = nodeList.get(i)[2];
+            nodes[0][i] = nodeList.get(i)[1];   // latitude
+            nodes[1][i] = nodeList.get(i)[2];   // longitude
 
             nodeLookup.put((long) nodeList.get(i)[0],
                     new double[]{
@@ -139,9 +139,12 @@ public class GraphManager {
 
     private void convertToEdgeStructure(OsmWay way) {
         for (int i = 0; i < way.getNumberOfNodes() - 1; i++) {
-            edges[i][0] = (int) nodeLookup.get(way.getNodeId(i))[0];
-            edges[i][1] = (int) nodeLookup.get(way.getNodeId(i + 1))[0];
-            // TODO calculate distance
+            double[] node1 = nodeLookup.get(i);
+            double[] node2 = nodeLookup.get(i + 1);
+
+            edges[i][0] = (int) node1[0];
+            edges[i][1] = (int) node2[0];
+            edges[i][2] = (int) Distance.calculateDistance(node1[1], node1[2], node2[1], node2[2]);
         }
     }
 
