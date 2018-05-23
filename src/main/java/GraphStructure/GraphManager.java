@@ -87,9 +87,9 @@ public class GraphManager {
                 OsmWay currentEdge = (OsmWay) container.getEntity();
                 if (Highway.isHighway(OsmModelUtil.getTagsAsMap(currentEdge).get("highway"))) {
                     wayCount++;
+                    nodeCount += (2*currentEdge.getNumberOfNodes())-2;
                     for (int i = 0; i < currentEdge.getNumberOfNodes(); i++) {
                         nodeLookup.put(currentEdge.getNodeId(i), new double[]{});
-                        nodeCount++;
                         System.out.println("relevant node added: " + currentEdge.getNodeId(i));
                     }
                 }
