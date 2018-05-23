@@ -4,10 +4,7 @@ import Data.FilePaths;
 import Data.Highway;
 import Data.HighwayType;
 import Util.Distance;
-import de.topobyte.osm4j.core.model.iface.EntityContainer;
-import de.topobyte.osm4j.core.model.iface.EntityType;
-import de.topobyte.osm4j.core.model.iface.OsmNode;
-import de.topobyte.osm4j.core.model.iface.OsmWay;
+import de.topobyte.osm4j.core.model.iface.*;
 import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.pbf.seq.PbfIterator;
 
@@ -87,7 +84,7 @@ public class GraphManager {
                 OsmWay currentEdge = (OsmWay) container.getEntity();
                 if (Highway.isHighway(OsmModelUtil.getTagsAsMap(currentEdge).get("highway"))) {
                     wayCount++;
-                    nodeCount += (2*currentEdge.getNumberOfNodes())-2;
+                    nodeCount += (2 * currentEdge.getNumberOfNodes()) - 2;
                     for (int i = 0; i < currentEdge.getNumberOfNodes(); i++) {
                         nodeLookup.put(currentEdge.getNodeId(i), new double[]{});
                         System.out.println("relevant node added: " + currentEdge.getNodeId(i));
@@ -153,7 +150,7 @@ public class GraphManager {
     private void convertToEdgeStructure(OsmWay way) {
         for (int i = 0; i < way.getNumberOfNodes() - 1; i++) {
             double[] node1 = nodeLookup.get(way.getNodeId(i));
-            double[] node2 = nodeLookup.get(way.getNodeId(i+1));
+            double[] node2 = nodeLookup.get(way.getNodeId(i + 1));
 
             edges[0][i] = (int) node1[0]; // starting node
             edges[1][i] = (int) node2[0]; // target node
@@ -163,6 +160,28 @@ public class GraphManager {
 
     private void sortEdges() {
         java.util.Arrays.sort(edges, (a, b) -> (Integer.compare(a[0], b[0])));
+    }
+
+    private void retrieveLeisurePOIs() {
+        edges = new int[3][wayCount];
+        iterator = new PbfIterator(stream, false);
+        for (EntityContainer container : iterator) {
+            if (container.getType() == EntityType.Node) {
+                OsmNode node = (OsmNode) container.getEntity();
+                Map<String, String> tags = OsmModelUtil.getTagsAsMap(node);
+                String amenity = tags.get("amenity");
+                // TODO: check for desired leisures and add to a leisureList
+                boolean isPub = amenity != null && amenity.equals("pub");
+                if (isPub) {
+                    System.out.println(String.format("%-15s %-40s %-15f %-15f",
+                            node.getId(),
+                            tags.get("name"),
+                            node.getLatitude(),
+                            node.getLongitude()
+                    ));
+                }
+            }
+        }
     }
 
 
