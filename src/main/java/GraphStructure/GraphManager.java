@@ -1,5 +1,6 @@
 package GraphStructure;
 
+import Data.AmenityHandling;
 import Data.FilePaths;
 import Data.HighwayHandling;
 import Util.Distance;
@@ -11,6 +12,7 @@ import java.io.*;
 import java.util.*;
 
 public class GraphManager {
+    //TODO: change to germany when needed
     private final String pbfPath = FilePaths.pbfBW;
     private final String binaryPath = FilePaths.binBW;
 
@@ -48,8 +50,7 @@ public class GraphManager {
             sortEdges();
             System.out.println("retrieved edges between all relevant nodes");
 
-            System.out.println(nodeCount);
-            System.out.println(wayCount);
+            saveToBinary();
 
 
         } catch (FileNotFoundException e) {
@@ -153,7 +154,7 @@ public class GraphManager {
         java.util.Arrays.sort(edges, (a, b) -> (Integer.compare(a[0], b[0])));
     }
 
-    private void retrieveLeisurePOIs() {
+    private void retrieveAmenityPOIs() {
         edges = new int[3][wayCount];
         iterator = new PbfIterator(stream, false);
         for (EntityContainer container : iterator) {
@@ -162,8 +163,7 @@ public class GraphManager {
                 Map<String, String> tags = OsmModelUtil.getTagsAsMap(node);
                 String amenity = tags.get("amenity");
                 // TODO: check for desired leisures and add to a leisureList
-                boolean isPub = amenity != null && amenity.equals("pub");
-                if (isPub) {
+                if (AmenityHandling.isAmenity(amenity)) {
                     System.out.println(String.format("%-15s %-40s %-15f %-15f",
                             node.getId(),
                             tags.get("name"),
@@ -175,5 +175,34 @@ public class GraphManager {
         }
     }
 
+    private void saveToBinary(){
+        PrintWriter writer = null;
+        try {
+            // TODO: change to germany if needed
+            writer= new PrintWriter(FilePaths.binBW, "UTF-8");
+            writer.println(nodes[0].length);
+            for (int i = 0; i < nodes[0].length; i++) {
+                writer.print((int) nodes[0][i] + " ");
+                writer.print(nodes[1][i] + " ");
+                writer.println(nodes[2][i]);
+            }
+            writer.close();
+            // TODO: change to germany if needed
+            writer = new PrintWriter(FilePaths.binBW, "UTF-8");
+            writer.println(edges.length);
+            for (int i = 0; i < edges.length; i++) {
+                writer.print(edges[i][1] + " ");
+                writer.print(edges[i][2] + " ");
+                writer.println(edges[i][3]);
+            }
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } finally {
+            writer.close();
+        }
+    }
 
 }
