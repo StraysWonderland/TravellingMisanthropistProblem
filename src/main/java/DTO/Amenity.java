@@ -1,4 +1,4 @@
-package Data;
+package DTO;
 
 public class Amenity {
 }

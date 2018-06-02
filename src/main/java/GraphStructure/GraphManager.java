@@ -1,8 +1,7 @@
 package GraphStructure;
 
 import Data.FilePaths;
-import Data.Highway;
-import Data.HighwayType;
+import Data.HighwayHandling;
 import Util.Distance;
 import de.topobyte.osm4j.core.model.iface.*;
 import de.topobyte.osm4j.core.model.util.OsmModelUtil;
@@ -74,7 +73,7 @@ public class GraphManager {
         for (EntityContainer container : iterator) {
             if (container.getType() == EntityType.Way) {
                 OsmWay currentEdge = (OsmWay) container.getEntity();
-                if (Highway.isHighway(OsmModelUtil.getTagsAsMap(currentEdge).get("highway"))) {
+                if (HighwayHandling.isHighway(OsmModelUtil.getTagsAsMap(currentEdge).get("highway"))) {
                     wayCount++;
                     nodeCount += (2 * currentEdge.getNumberOfNodes()) - 2;
                     for (int i = 0; i < currentEdge.getNumberOfNodes(); i++) {
@@ -130,7 +129,7 @@ public class GraphManager {
         for (EntityContainer container : iterator) {
             if (container.getType() == EntityType.Way) {
                 OsmWay currentWay = (OsmWay) container.getEntity();
-                if (Highway.isHighway(OsmModelUtil.getTagsAsMap(currentWay).get("highway"))) {
+                if (HighwayHandling.isHighway(OsmModelUtil.getTagsAsMap(currentWay).get("highway"))) {
                     for (int i = 0; i < currentWay.getNumberOfNodes(); i++) {
                         convertToEdgeStructure(currentWay);
                     }

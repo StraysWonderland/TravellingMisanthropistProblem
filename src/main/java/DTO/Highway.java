@@ -1,6 +1,6 @@
-package Data;
+package DTO;
 
-public enum HighwayType {
+public enum Highway {
     motorway("motorway", 1, 120),
     motorway_link("motorway_link", 2, 60),
     primary("primary", 3, 100),
@@ -27,7 +27,7 @@ public enum HighwayType {
     private int Type;
     private int MaxSpeed;
 
-    HighwayType(String name, int type, int maxSpeed) {
+    Highway(String name, int type, int maxSpeed) {
         Name = name;
         Type = type;
         MaxSpeed = maxSpeed;

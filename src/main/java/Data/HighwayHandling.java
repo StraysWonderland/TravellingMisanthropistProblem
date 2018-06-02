@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Highway {
+public class HighwayHandling {
 
     private static List<String> desiredTypesValues = Arrays.asList(
             "motorway",
