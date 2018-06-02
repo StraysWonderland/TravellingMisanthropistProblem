@@ -1,5 +1,6 @@
 package Util;
 
+import Data.FilePaths;
 import de.topobyte.osm4j.core.access.OsmIterator;
 import de.topobyte.osm4j.core.model.iface.EntityContainer;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
@@ -11,8 +12,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class OsmParser {
-    private final String pbfPath = "baden-wuerttemberg-latest.osm.pbf";
-    private final String binaryPath = "baden-wuerttemberg-map";
+    // TODO: change to germany when needed
+    private final String pbfPath = FilePaths.pbfBW;
+    private final String binaryPath = FilePaths.binBW;
 
     private int[][] edges;
     private double[][] vertices;
