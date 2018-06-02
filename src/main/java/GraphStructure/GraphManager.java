@@ -17,24 +17,16 @@ public class GraphManager {
 
     private double[][] nodes;
     private int[][] edges;
-    private int[] offset;
 
     HashMap<Long, double[]> nodeLookup;
 
     private int wayCount = 0;
     private int nodeCount = 0;
 
-    // nodes currently : 2969443
-    private int numNodes = 39472043;
-    private int numEdges = 52325469;
-
     PbfIterator iterator;
     InputStream stream;
 
     public GraphManager() {
-        offset = new int[numNodes];
-        Arrays.fill(offset, -1);
-
         nodeLookup = new HashMap<>();
     }
 
@@ -68,8 +60,8 @@ public class GraphManager {
             try {
                 stream.close();
                 System.out.println(String.format("nodes: %-15s edges: %-15s",
-                        numNodes,
-                        numEdges
+                        nodeCount,
+                        wayCount
                 ));
             } catch (IOException e) {
                 System.out.println("Closing of InputStream failed!");
