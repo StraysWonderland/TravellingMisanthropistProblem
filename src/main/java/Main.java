@@ -1,20 +1,18 @@
-import GraphStructure.GraphManager;
-import Util.OsmParser;
+import GraphStructure.Graph;
+import GraphStructure.GraphParserPBF;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @EnableAutoConfiguration
 public class Main {
 
     private static final String template = "Hello, %s!";
-    private static GraphManager graphManager;
+    private static GraphParserPBF graphParserPBF;
 
     @RequestMapping("/greeting")
     @ResponseBody
@@ -24,8 +22,12 @@ public class Main {
 
     // start by parsing the graph; then launch springboot
     public static void main(String[] args) throws Exception {
-        graphManager = new GraphManager();
-        graphManager.parseFromPbf();
+
+        // graphParserPBF = new GraphParserPBF();
+        // graphParserPBF.parseFromPbf();
+
+        Graph graph = new Graph();
+        graph.graphFromBinaries();
         SpringApplication.run(Main.class, args);
     }
 }

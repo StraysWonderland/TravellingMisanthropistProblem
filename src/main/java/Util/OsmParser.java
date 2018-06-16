@@ -14,7 +14,6 @@ import java.util.Map;
 public class OsmParser {
     // TODO: change to germany when needed
     private final String pbfPath = FilePaths.pbfBW;
-    private final String binaryPath = FilePaths.binBW;
 
     private int[][] edges;
     private double[][] vertices;
