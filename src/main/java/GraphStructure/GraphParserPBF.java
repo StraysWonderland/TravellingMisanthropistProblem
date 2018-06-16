@@ -11,10 +11,12 @@ import de.topobyte.osm4j.pbf.seq.PbfIterator;
 import java.io.*;
 import java.util.*;
 
-public class GraphManager {
+public class GraphParserPBF {
     //TODO: change to germany when needed
     private final String pbfPath = FilePaths.pbfBW;
-    private final String binaryPath = FilePaths.binBW;
+    private final String binaryPathNodes = FilePaths.binBWNodes;
+    private final String binaryPathEdges = FilePaths.binBWEdges;
+    private final String binaryPathOffsets = FilePaths.binBWOffsets;
 
     private double[][] nodes;
     private int[][] edges;
@@ -27,7 +29,7 @@ public class GraphManager {
     PbfIterator iterator;
     InputStream stream;
 
-    public GraphManager() {
+    public GraphParserPBF() {
         nodeLookup = new HashMap<>();
     }
 
@@ -50,7 +52,8 @@ public class GraphManager {
             sortEdges();
             System.out.println("retrieved edges between all relevant nodes");
 
-            saveToBinary();
+            serializeGraph();
+            System.out.println("graph serialized");
 
 
         } catch (FileNotFoundException e) {
@@ -98,9 +101,10 @@ public class GraphManager {
                             osmNode.getLongitude(),
                     };
                     nodeLookup.put(osmNode.getId(), nodeData);
-                    System.out.println("data for node " + osmNode.getId() + ": "
-                            + "lat: " + nodeData[1]
-                            + "lon: " + nodeData[2]);
+                    System.out.println(String.format("data for node: %-15s lat: %-20f  lon: %-20f" ,
+                            osmNode.getId(),
+                            nodeData[1],
+                            nodeData[2]));
                 }
             }
         }
@@ -175,33 +179,20 @@ public class GraphManager {
         }
     }
 
-    private void saveToBinary(){
-        PrintWriter writer = null;
-        try {
-            // TODO: change to germany if needed
-            writer= new PrintWriter(FilePaths.binBW, "UTF-8");
-            writer.println(nodes[0].length);
-            for (int i = 0; i < nodes[0].length; i++) {
-                writer.print((int) nodes[0][i] + " ");
-                writer.print(nodes[1][i] + " ");
-                writer.println(nodes[2][i]);
-            }
-            writer.close();
-            // TODO: change to germany if needed
-            writer = new PrintWriter(FilePaths.binBW, "UTF-8");
-            writer.println(edges.length);
-            for (int i = 0; i < edges.length; i++) {
-                writer.print(edges[i][1] + " ");
-                writer.print(edges[i][2] + " ");
-                writer.println(edges[i][3]);
-            }
-            writer.close();
-        } catch (FileNotFoundException e) {
+
+    private void serializeGraph() {
+        try  {
+            FileOutputStream fos = new FileOutputStream(binaryPathEdges);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(edges);
+            oos.close();
+
+            fos = new FileOutputStream(binaryPathNodes);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(nodes);
+            oos.close();
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } finally {
-            writer.close();
         }
     }
 
