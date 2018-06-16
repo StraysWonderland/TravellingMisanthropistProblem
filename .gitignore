@@ -66,6 +66,7 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
-#pbf files
+#pbf and osm files
 *.osm.pbf
+*.osm.*
 # End of https://www.gitignore.io/api/intellij
