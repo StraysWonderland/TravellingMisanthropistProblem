@@ -20,7 +20,7 @@ public class OsmParser {
     private int[] offsets;
 
 
-    private void readFromByteFile(String graphPath) throws FileNotFoundException {
+    private void readFromByteFile(String graphPath) {
         InputStream fis = null;
         try {
             fis = new FileInputStream(graphPath);

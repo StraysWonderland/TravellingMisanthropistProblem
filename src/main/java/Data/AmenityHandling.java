@@ -26,9 +26,6 @@ public class AmenityHandling {
         if (currentType == null)
             return false;
 
-        if (!desiredAmenitiesValues.contains(currentType))
-            return false;
-
-        return true;
+        return desiredAmenitiesValues.contains(currentType);
     }
 }

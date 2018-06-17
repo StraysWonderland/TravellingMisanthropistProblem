@@ -38,9 +38,6 @@ public class HighwayHandling {
         if (currentType == null)
             return false;
 
-        if (!desiredHighwayTypes.contains(currentType))
-            return false;
-
-        return true;
+        return desiredHighwayTypes.contains(currentType);
     }
 }
