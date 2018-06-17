@@ -113,7 +113,7 @@ public class GraphParserPBF {
     private void localiseAndSortNodes() {
         nodes = new double[3][nodeCount];
         List<double[]> nodeList = new ArrayList<>(nodeLookup.values());
-        Collections.sort(nodeList, (a, b) -> (Double.compare(a[0], b[0])));
+        nodeList.sort((a, b) -> (Double.compare(a[0], b[0])));
         for (int i = 0; i < nodeList.size(); i++) {
             nodes[0][i] = nodeList.get(i)[1];   // latitude
             nodes[1][i] = nodeList.get(i)[2];   // longitude
