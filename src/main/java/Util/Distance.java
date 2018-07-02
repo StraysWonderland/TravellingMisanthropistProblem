@@ -3,9 +3,9 @@ package Util;
 public  class Distance {
 
     /**
-     * @param lat
+     * @param latNode1, latNode2
      *            Latitude of  each node.
-     * @param lng
+     * @param lngNode1, lngNode2
      *            Longitude of each node.
      * @return Approximation of the distance between two points.
      *

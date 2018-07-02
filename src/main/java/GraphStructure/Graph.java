@@ -61,4 +61,16 @@ public class Graph {
         }
     }
 
+
+    public int[][] getEdges() {
+        return edges;
+    }
+
+    public double[][] getNodes() {
+        return nodes;
+    }
+
+    public int[] getOffsets() {
+        return offsets;
+    }
 }
