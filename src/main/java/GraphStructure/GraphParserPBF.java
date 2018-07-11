@@ -4,6 +4,7 @@ import Data.AmenityHandling;
 import Data.FilePaths;
 import Data.HighwayHandling;
 import Util.Distance;
+import Util.PathTypes;
 import de.topobyte.osm4j.core.model.iface.*;
 import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.pbf.seq.PbfIterator;
@@ -101,7 +102,7 @@ public class GraphParserPBF {
                             osmNode.getLongitude(),
                     };
                     nodeLookup.put(osmNode.getId(), nodeData);
-                    System.out.println(String.format("data for node: %-15s lat: %-20f  lon: %-20f" ,
+                    System.out.println(String.format("data for node: %-15s lat: %-20f  lon: %-20f",
                             osmNode.getId(),
                             nodeData[1],
                             nodeData[2]));
@@ -129,7 +130,7 @@ public class GraphParserPBF {
     }
 
     private void retrieveEdgesBetweenNodes() {
-        edges = new int[3][wayCount];
+        edges = new int[5][wayCount];
         iterator = new PbfIterator(stream, false);
         for (EntityContainer container : iterator) {
             if (container.getType() == EntityType.Way) {
@@ -147,10 +148,32 @@ public class GraphParserPBF {
         for (int i = 0; i < way.getNumberOfNodes() - 1; i++) {
             double[] node1 = nodeLookup.get(way.getNodeId(i));
             double[] node2 = nodeLookup.get(way.getNodeId(i + 1));
+            float[] edgeType = PathTypes.getMaxSpeed(way);
 
             edges[0][i] = (int) node1[0]; // starting node
             edges[1][i] = (int) node2[0]; // target node
             edges[2][i] = (int) Distance.calculateDistance(node1[1], node1[2], node2[1], node2[2]); //distance
+            edges[3][i] = (int) edgeType[0];
+            edges[4][i] = (int) edgeType[1];
+
+            if (!PathTypes.isOneWay(way)) {
+                convertToReverseEdges(way);
+            }
+        }
+    }
+
+    private void convertToReverseEdges(OsmWay way) {
+        for (int i = way.getNumberOfNodes() - 1; i > 0; i--) {
+            double[] node1 = nodeLookup.get(way.getNodeId(i));
+            double[] node2 = nodeLookup.get(way.getNodeId(i + 1));
+            float[] edgeType = PathTypes.getMaxSpeed(way);
+
+            edges[0][i] = (int) node1[0];
+            edges[1][i] = (int) node2[0];
+            edges[2][i] = (int) Distance.calculateDistance(node1[1], node1[2], node2[1], node2[2]);
+            edges[3][i] = (int) edgeType[0];
+            edges[4][i] = (int) edgeType[1];
+
         }
     }
 
@@ -181,7 +204,7 @@ public class GraphParserPBF {
 
 
     private void serializeGraph() {
-        try  {
+        try {
             FileOutputStream fos = new FileOutputStream(binaryPathEdges);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(edges);
