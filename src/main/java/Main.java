@@ -28,6 +28,7 @@ public class Main {
 
         Graph graph = new Graph();
         graph.graphFromBinaries();
+        graph.calculateOffsets();
         SpringApplication.run(Main.class, args);
     }
 }

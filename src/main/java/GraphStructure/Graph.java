@@ -2,7 +2,9 @@ package GraphStructure;
 
 import Data.FilePaths;
 
+import java.awt.*;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -35,14 +37,14 @@ public class Graph {
     public void graphFromBinaries() throws ClassNotFoundException {
         try {
             // Read edges
-            FileInputStream fis = new FileInputStream(FilePaths.binBWEdges );
+            FileInputStream fis = new FileInputStream(FilePaths.binBWEdges);
             ObjectInputStream ois = new ObjectInputStream(fis);
             edges = (int[][]) ois.readObject();
 
             // Read nodes
             fis = new FileInputStream(FilePaths.binBWNodes);
             ois = new ObjectInputStream(fis);
-            nodes = (double[][])ois.readObject();
+            nodes = (double[][]) ois.readObject();
 
             //fis = new FileInputStream(path + "offsets");
             //ois = new ObjectInputStream(fis);
@@ -61,6 +63,24 @@ public class Graph {
         }
     }
 
+    public void calculateOffsets() {
+        offsets = new int[nodes[0].length];
+
+        int sourcePrevious = 0;
+        for (int currentEdgeCount = 0; currentEdgeCount < edgeCount; currentEdgeCount++) {
+            //Set offsets
+            int currentEdgeSource = edges[0][currentEdgeCount];
+            if (sourcePrevious == currentEdgeSource) {
+                offsets[sourcePrevious] = currentEdgeCount;
+                sourcePrevious++;
+            } else if (currentEdgeSource > sourcePrevious) {
+                while (currentEdgeSource >= sourcePrevious) {
+                    offsets[sourcePrevious] = currentEdgeCount;
+                    sourcePrevious++;
+                }
+            }
+        }
+    }
 
     public int[][] getEdges() {
         return edges;
