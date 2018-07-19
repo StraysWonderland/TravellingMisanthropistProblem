@@ -17,11 +17,13 @@ public enum Highway {
     road("road", 14, 50),
     service("service", 15, 30),
     turning_circle("turning_circle", 16, 50),
-    cycleway("cicleway",17,10),
-    steps("steps",18,5),
-    path("path",19,5),
-    bridleway("bridleway",20,5),
-    track("track",21,50);
+    cycleway("cicleway", 17, 10),
+    steps("steps", 18, 5),
+    path("path", 19, 5),
+    bridleway("bridleway", 20, 5),
+    track("track", 21, 50),
+    footway("footway",22,15);
+
 
     private String Name;
     private int Type;

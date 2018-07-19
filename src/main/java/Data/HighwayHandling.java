@@ -1,4 +1,7 @@
 package Data;
+
+import DTO.Highway;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +41,6 @@ public class HighwayHandling {
         if (currentType == null)
             return false;
 
-        return desiredHighwayTypes.contains(currentType);
+        return Arrays.stream(Highway.values()).anyMatch(x -> x.getName().equals(currentType));
     }
 }
