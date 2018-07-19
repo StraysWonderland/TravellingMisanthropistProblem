@@ -5,12 +5,18 @@ import Data.FilePaths;
 import Data.HighwayHandling;
 import Util.Distance;
 import Util.PathTypes;
-import de.topobyte.osm4j.core.model.iface.*;
+import de.topobyte.osm4j.core.model.iface.EntityContainer;
+import de.topobyte.osm4j.core.model.iface.EntityType;
+import de.topobyte.osm4j.core.model.iface.OsmNode;
+import de.topobyte.osm4j.core.model.iface.OsmWay;
 import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.pbf.seq.PbfIterator;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GraphParserPBF {
     //TODO: change to germany when needed
@@ -18,17 +24,13 @@ public class GraphParserPBF {
     private final String binaryPathNodes = FilePaths.binBWNodes;
     private final String binaryPathEdges = FilePaths.binBWEdges;
     private final String binaryPathOffsets = FilePaths.binBWOffsets;
-
-    private double[][] nodes;
-    private int[][] edges;
-
     HashMap<Long, double[]> nodeLookup;
-
-    private int wayCount = 0;
-    private int nodeCount = 0;
-
     PbfIterator iterator;
     InputStream stream;
+    private double[][] nodes;
+    private int[][] edges;
+    private int wayCount = 0;
+    private int nodeCount = 0;
 
     public GraphParserPBF() {
         nodeLookup = new HashMap<>();
@@ -52,6 +54,8 @@ public class GraphParserPBF {
             retrieveEdgesBetweenNodes();
             sortEdges();
             System.out.println("retrieved edges between all relevant nodes");
+
+            getSomeEdge();
 
             serializeGraph();
             System.out.println("graph serialized");
@@ -83,7 +87,6 @@ public class GraphParserPBF {
                     nodeCount += (2 * currentEdge.getNumberOfNodes()) - 2;
                     for (int i = 0; i < currentEdge.getNumberOfNodes(); i++) {
                         nodeLookup.put(currentEdge.getNodeId(i), new double[]{});
-                        System.out.println("relevant node added: " + currentEdge.getNodeId(i));
                     }
                 }
             }
@@ -96,16 +99,13 @@ public class GraphParserPBF {
             if (container.getType() == EntityType.Node) {
                 OsmNode osmNode = (OsmNode) container.getEntity();
                 if (nodeLookup.containsKey(osmNode.getId())) {
+
                     double[] nodeData = new double[]{
-                            osmNode.getId(),
+                            (double) osmNode.getId(),
                             osmNode.getLatitude(),
                             osmNode.getLongitude(),
                     };
                     nodeLookup.put(osmNode.getId(), nodeData);
-                    System.out.println(String.format("data for node: %-15s lat: %-20f  lon: %-20f",
-                            osmNode.getId(),
-                            nodeData[1],
-                            nodeData[2]));
                 }
             }
         }
@@ -173,12 +173,19 @@ public class GraphParserPBF {
             edges[2][i] = (int) Distance.calculateDistance(node1[1], node1[2], node2[1], node2[2]);
             edges[3][i] = (int) edgeType[0];
             edges[4][i] = (int) edgeType[1];
-
         }
     }
 
     private void sortEdges() {
         java.util.Arrays.sort(edges, (a, b) -> (Integer.compare(a[0], b[0])));
+    }
+
+    private void getSomeEdge() {
+        for (int i = 0; i < edges[0].length; i++) {
+            if (edges[0][i] != 0) {
+                System.out.println("not 0-source detected:  " + edges[0][i]);
+            }
+        }
     }
 
     private void retrieveAmenityPOIs() {
@@ -201,7 +208,6 @@ public class GraphParserPBF {
             }
         }
     }
-
 
     private void serializeGraph() {
         try {
