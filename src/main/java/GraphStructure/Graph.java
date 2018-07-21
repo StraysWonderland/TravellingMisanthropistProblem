@@ -46,12 +46,14 @@ public class Graph {
             ois = new ObjectInputStream(fis);
             nodes = (double[][]) ois.readObject();
 
+            edgeCount = edges[0].length;
+            nodeCount = nodes[0].length;
+
             //fis = new FileInputStream(path + "offsets");
             //ois = new ObjectInputStream(fis);
             //offsets = (int[]) ois.readObject();
 
-            edgeCount = edges[0].length;
-            nodeCount = nodes[0].length;
+            calculateOffsets();
 
             createNodeGrid();
 
@@ -65,19 +67,14 @@ public class Graph {
 
     public void calculateOffsets() {
         offsets = new int[nodes[0].length];
+        Arrays.fill(offsets, -1);
+        int counterNodes = -1;
 
-        int sourcePrevious = 0;
         for (int currentEdgeCount = 0; currentEdgeCount < edgeCount; currentEdgeCount++) {
-            //Set offsets
-            int currentEdgeSource = edges[0][currentEdgeCount];
-            if (sourcePrevious == currentEdgeSource) {
-                offsets[sourcePrevious] = currentEdgeCount;
-                sourcePrevious++;
-            } else if (currentEdgeSource > sourcePrevious) {
-                while (currentEdgeSource >= sourcePrevious) {
-                    offsets[sourcePrevious] = currentEdgeCount;
-                    sourcePrevious++;
-                }
+            int targetVertex = edges[0][currentEdgeCount];
+            if (counterNodes < targetVertex) {
+                counterNodes = targetVertex;
+                offsets[counterNodes] = currentEdgeCount;
             }
         }
     }
