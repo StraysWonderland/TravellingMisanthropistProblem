@@ -8,12 +8,12 @@ import java.util.Map;
 
 public class PathTypes {
 
-    public static boolean isOneWayTag(OsmWay osmWay) {
+    public static boolean isOneWay(OsmWay osmWay) {
         Map<String, String> tags = OsmModelUtil.getTagsAsMap(osmWay);
         return tags.containsKey("oneway") && tags.get("oneway").equals("yes") || tags.containsValue("motorway") || tags.containsValue("motorway_link");
     }
 
-    public static boolean isOneWay(OsmWay osmWay) {
+    public static boolean isOneWayOld(OsmWay osmWay) {
         boolean oneWay = false;
         for (int j = 0; j < osmWay.getNumberOfTags(); j++) {
             oneWay = (osmWay.getTag(j).getKey().equals("oneway")

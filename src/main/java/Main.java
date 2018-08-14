@@ -21,14 +21,19 @@ public class Main {
     }
 
     // start by parsing the graph; then launch springboot
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        // graphParserPBF = new GraphParserPBF();
-        // graphParserPBF.parseFromPbf();
+        graphParserPBF = new GraphParserPBF();
+        graphParserPBF.parseFromPbf();
 
         Graph graph = new Graph();
-        graph.graphFromBinaries();
-        graph.calculateOffsets();
+        graph.loadMapData();
+        //graph.graphFromBinaries();
+        //graph.calculateOffsets();
+        //graph.getOffsets();
+        //graph-.getEdges();
+        //graph.getNodes();
+
         SpringApplication.run(Main.class, args);
     }
 }

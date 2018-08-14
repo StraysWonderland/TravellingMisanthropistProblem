@@ -18,7 +18,6 @@ public class Distance {
         return Math.sqrt(x * x + y * y) * 110.25;
     }
 
-
     public static double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
