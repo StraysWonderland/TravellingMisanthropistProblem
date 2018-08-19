@@ -17,10 +17,10 @@ public class GraphWriter {
         writer = new PrintWriter(edgesPath,
                 "UTF-8");
         writer.println(edges.length);
-        for (int i = 0; i < edges.length; i++) {
-            writer.print(edges[i][1] + " ");
-            writer.print(edges[i][2] + " ");
-            writer.println(edges[i][3]);
+        for (int[] edge : edges) {
+            writer.print(edge[1] + " ");
+            writer.print(edge[2] + " ");
+            writer.println(edge[3]);
         }
         writer.close();
     }

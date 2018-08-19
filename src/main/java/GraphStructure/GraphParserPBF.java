@@ -186,8 +186,6 @@ public class GraphParserPBF {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("File could not be found!");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

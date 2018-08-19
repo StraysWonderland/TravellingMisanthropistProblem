@@ -57,12 +57,12 @@ public class Pathing {
             prevNode = prev[prevNode];
             solutionPath.add(prevNode);
         }
-        String solution = nodes[0][dest] + "_" + nodes[1][dest];
+        StringBuilder solution = new StringBuilder(nodes[0][dest] + "_" + nodes[1][dest]);
         for (Integer aSolutionPath : solutionPath) {
-            solution = nodes[0][aSolutionPath] + "_" + nodes[1][aSolutionPath] + "," + solution;
+            solution.insert(0, nodes[0][aSolutionPath] + "_" + nodes[1][aSolutionPath] + ",");
         }
-        solution += dest;
-        return solution;
+        solution.append(dest);
+        return solution.toString();
     }
 
 

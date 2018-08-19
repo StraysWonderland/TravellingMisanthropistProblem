@@ -13,17 +13,6 @@ public class PathTypes {
         return tags.containsKey("oneway") && tags.get("oneway").equals("yes") || tags.containsValue("motorway") || tags.containsValue("motorway_link");
     }
 
-    public static boolean isOneWayOld(OsmWay osmWay) {
-        boolean oneWay = false;
-        for (int j = 0; j < osmWay.getNumberOfTags(); j++) {
-            oneWay = (osmWay.getTag(j).getKey().equals("oneway")
-                    && osmWay.getTag(j).getValue().equals("yes"))
-                    || osmWay.getTag(j).getKey().equals("motorway")
-                    || osmWay.getTag(j).getKey().equals("motorway_link");
-        }
-        return true;
-    }
-
     public static float[] getMaxSpeed(OsmWay osmWay) {
         Map<String, String> tags = OsmModelUtil.getTagsAsMap(osmWay);
         String highway = tags.get("highway");

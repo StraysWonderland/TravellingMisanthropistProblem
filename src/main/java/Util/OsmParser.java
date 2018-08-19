@@ -1,15 +1,9 @@
 package Util;
 
 import Data.FilePaths;
-import de.topobyte.osm4j.core.access.OsmIterator;
-import de.topobyte.osm4j.core.model.iface.EntityContainer;
-import de.topobyte.osm4j.core.model.iface.OsmNode;
-import de.topobyte.osm4j.core.model.util.OsmModelUtil;
-import de.topobyte.osm4j.pbf.seq.PbfIterator;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Map;
 
 public class OsmParser {
     // TODO: change to germany when needed
