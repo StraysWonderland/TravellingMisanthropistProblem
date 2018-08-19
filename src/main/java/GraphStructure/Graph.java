@@ -1,26 +1,23 @@
 package GraphStructure;
 
 import Data.FilePaths;
+import Util.Distance;
 
-import java.awt.*;
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Graph {
-    private int[][] edges;
-    private double[][] nodes;
-    private int[] offsets;
-
+    public HashMap<String, LinkedList<Integer>> nodeGrid;
     int nodeCount = 0;
     int edgeCount = 0;
     int amenityCount = 0;
-
-    public HashMap<String, LinkedList<Integer>> nodeGrid;
-
     String edgesPath = FilePaths.binBWEdges;
     String nodesPath = FilePaths.binBWNodes;
+    private int[][] edges;
+    private double[][] nodes;
+    private int[] offsets;
 
     private void createNodeGrid() {
         nodeGrid = new HashMap<>();
@@ -35,6 +32,29 @@ public class Graph {
                 nodeGrid.put(gridKey, nodesInCell);
             }
         }
+    }
+
+
+    public int getNearestNode(double[] latLng) {
+        int nearestNodeIndex = -1;
+        double shortestDist = Double.MAX_VALUE;
+        String gridKey = (double) Math.round(latLng[0] * 10) / 10 + "-" + (double) Math.round(latLng[1] * 10) / 10;
+        LinkedList<Integer> gridCell;
+
+        if (nodeGrid.containsKey(gridKey)) {
+            gridCell = nodeGrid.get(gridKey);
+        } else {
+            return -1;
+        }
+
+        for (int nodeID : gridCell) {
+            double dist = Distance.euclideanDistance(nodes[0][nodeID], nodes[1][nodeID], latLng[0], latLng[1]);
+            if (dist < shortestDist) {
+                shortestDist = dist;
+                nearestNodeIndex = nodeID;
+            }
+        }
+        return nearestNodeIndex;
     }
 
     public void loadMapData() {
@@ -113,7 +133,7 @@ public class Graph {
         bf.close();
     }
 
-    public void graphFromBinaries()  {
+    public void graphFromBinaries() {
         try {
             // Read edges
             FileInputStream fis = new FileInputStream(FilePaths.binBWEdges);
@@ -139,9 +159,7 @@ public class Graph {
             fis.close();
             ois.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
