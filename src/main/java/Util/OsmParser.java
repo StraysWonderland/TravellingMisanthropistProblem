@@ -14,7 +14,7 @@ public class OsmParser {
     private int[] offsets;
 
 
-    private void readFromByteFile(String graphPath) {
+    private void readFromByteFile(String graphPath) throws IOException {
         InputStream fis = null;
         try {
             fis = new FileInputStream(graphPath);
@@ -33,16 +33,13 @@ public class OsmParser {
             e.printStackTrace();
             System.out.println("File contains wrong object type!");
         } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                System.out.println("Closing of InputStream failed!");
-            }
+            fis.close();
             System.exit(5);
         }
+
     }
 
-    private void exportToByteFile(String exportPath) {
+    private void exportToByteFile(String exportPath) throws IOException {
         OutputStream fos = null;
 
         try {
@@ -56,12 +53,8 @@ public class OsmParser {
             e.printStackTrace();
             System.out.println("Could not export graph file!");
         } finally {
-            try {
                 fos.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Could not close output stream!");
-            }
+
         }
     }
 

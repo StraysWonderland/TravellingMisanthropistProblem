@@ -23,8 +23,8 @@ public class Main {
     // start by parsing the graph; then launch springboot
     public static void main(String[] args) {
 
-        graphParserPBF = new GraphParserPBF();
-        graphParserPBF.parseFromPbf();
+         // graphParserPBF = new GraphParserPBF();
+        // graphParserPBF.parseFromPbf();
 
         Graph graph = new Graph();
         graph.loadMapData();
