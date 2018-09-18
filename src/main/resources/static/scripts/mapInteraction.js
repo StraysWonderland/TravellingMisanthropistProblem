@@ -11,13 +11,39 @@ map.locate({setView: true}).on('locationfound', function (e) {
     map.addLayer(marker);
 });
 
-map.on('click', function (e) {
-    map.removeLayer(path);
-    marker.setLatLng(e.latlng).addTo(map);
-});
-
 function PathFunction(e) {
+    map.removeLayer(path);
     var pointList = [marker.getLatLng(), markerDest.getLatLng()];
     path = L.polyline(pointList);
     path.addTo(map);
 }
+
+map.on('click', function(e) {
+
+    if (typeof (marker) === 'undefined') {
+        map.stopLocate()
+
+        marker = new L.marker(e.latlng, {draggable : true});
+        marker.addTo(map);
+    } else {
+        marker.setLatLng(e.latlng);
+    }
+    if(selectedMarker !== undefined){
+        document.getElementById("rankedArticles").style.display='block';
+        $("#description").text("");
+        var id = selectedMarker.id
+        map.removeLayer(selectedMarker)
+        var newMarker;
+        if(selectedArticles.has(id)){
+            newMarker = L.marker([ selectedLat, selectedLon ], {icon: greenIcon})
+        }else{
+            newMarker = L.marker([ selectedLat, selectedLon ])
+        }
+        newMarker.addTo(markerGroup).bindTooltip(articles[id]['title']);
+        newMarker.id = id;
+        selectedMarker = undefined;
+    }
+
+    document.getElementById("headline").href = "https://www.wikipedia.de/";
+    document.getElementById("thumbnail").src = "https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg";
+});
