@@ -39,14 +39,8 @@ public class GraphParserPBF {
         nodeLookup = new HashMap<>();
     }
 
-    public void parseStrohm( ) throws IOException {
-        // Set of legal highway tags.
-        List<String> car = Arrays.asList(
-                "motorway", "trunk", "primary", "secondary", "tertiary", "unclassified",
-                "residential", "service", "motorway_link", "trunk_link", "primary_link", "secondary_link",
-                "tertiary_link", "living_street");
-        Set<String> legalStreetsCAR = new HashSet<>(car);
-
+    public void parseIterative( ) throws IOException {
+        // desirable highway tags.
         List<String> ped = Arrays.asList("residential", "service", "living_street", "pedestrian", "track",
                 "footway", "bridleway", "steps", "path", "cycleway", "trunk", "primary", "secondary", "tertiary",
                 "unclassified", "trunk_link", "primary_link", "secondary_link", "tertiary_link", "road");
@@ -75,8 +69,10 @@ public class GraphParserPBF {
 
                 if ((sidewalk != null && (sidewalk.equals("yes") || sidewalk.equals("right") || sidewalk.equals("left")
                         || sidewalk.equals("both")))
-                        || ((motorroad == null || !motorroad.equals("yes")) && highway != null
+                        || ((motorroad == null || !motorroad.equals("yes"))
+                        && highway != null
                         && legalStreetsPEDSTRIAN.contains(highway))) {
+
                     TLongList wayNodes = OsmModelUtil.nodesAsList((OsmWay) container.getEntity());
                     if (!nodeMap.containsKey(wayNodes.get(0))) {
                         nodeMap.put(wayNodes.get(0), numberNodes);
@@ -159,9 +155,11 @@ public class GraphParserPBF {
 
     public void parseFromPbf() {
         try {
-            parseStrohm();
+            parseIterative();
 
-/*            stream = new FileInputStream(pbfPath);
+            /*
+            Commented out for shitty parsing
+            stream = new FileInputStream(pbfPath);
             retrieveRelevantNodes();
             System.out.println("Looked up relevant nodes");
 
@@ -176,10 +174,10 @@ public class GraphParserPBF {
             stream = new FileInputStream(pbfPath);
             retrieveEdgesBetweenNodes();
             sortEdges();
-            System.out.println("retrieved edges between all relevant nodes");*/
+            System.out.println("retrieved edges between all relevant nodes");
+            */
 
             WriteToLineFile(edges, nodes, binaryPathNodes, binaryPathEdges);
-           // serializeGraph();
             System.out.println("graph serialized");
 
 
@@ -301,7 +299,6 @@ public class GraphParserPBF {
     }
 
     private void retrieveAmenityPOIs() {
-        edges = new int[3][wayCount];
         iterator = new PbfIterator(stream, false);
         for (EntityContainer container : iterator) {
             if (container.getType() == EntityType.Node) {
