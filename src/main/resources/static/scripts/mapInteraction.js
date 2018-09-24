@@ -18,6 +18,11 @@ function PathFunction(e) {
     path.addTo(map);
 }
 
+function GetPOIsInRangeFunction(e) {
+
+}
+
+
 map.on('click', function(e) {
 
     if (typeof (marker) === 'undefined') {
