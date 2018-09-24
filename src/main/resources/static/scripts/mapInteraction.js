@@ -26,7 +26,7 @@ function GetPOIsInRangeFunction(e) {
 map.on('click', function(e) {
 
     if (typeof (marker) === 'undefined') {
-        map.stopLocate()
+        map.stopLocate();
 
         marker = new L.marker(e.latlng, {draggable : true});
         marker.addTo(map);
@@ -36,8 +36,8 @@ map.on('click', function(e) {
     if(selectedMarker !== undefined){
         document.getElementById("rankedArticles").style.display='block';
         $("#description").text("");
-        var id = selectedMarker.id
-        map.removeLayer(selectedMarker)
+        var id = selectedMarker.id;
+        map.removeLayer(selectedMarker);
         var newMarker;
         if(selectedArticles.has(id)){
             newMarker = L.marker([ selectedLat, selectedLon ], {icon: greenIcon})

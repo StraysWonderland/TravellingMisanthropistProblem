@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class Main {
 
     private static final String template = "Hello, %s!";
-    private static GraphParserPBF graphParserPBF;
     private static Graph graph;
 
     @RequestMapping("/greeting")
@@ -30,7 +29,7 @@ public class Main {
 
     // start by parsing the graph; then launch springboot
     public static void main(String[] args) {
-         graphParserPBF = new GraphParserPBF();
+        GraphParserPBF graphParserPBF = new GraphParserPBF();
         try {
             graphParserPBF.retrieveAmenityPOIs();
         } catch (FileNotFoundException e) {
@@ -61,15 +60,15 @@ public class Main {
             nodes[i] = graph.getNearestNode(visitNodes[i]);
         }
 
-        String solution = "";
+        StringBuilder solution = new StringBuilder();
         for (int i = 0; i < result.size() - 1; i++) {
             int startNode = nodes[result.get(i)];
             int targetNode = nodes[result.get(i + 1)];
-            solution += Pathing.getShortestPath(startNode, targetNode, graph) + ",";
+            solution.append(Pathing.getShortestPath(startNode, targetNode, graph)).append(",");
         }
-        solution = solution.substring(0, solution.length() - 1);
+        solution = new StringBuilder(solution.substring(0, solution.length() - 1));
 
-        return solution;
+        return solution.toString();
     }
 
     private int[][] calculateCosts(int nodeCount, double[][] targetNodes) {

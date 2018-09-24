@@ -3,7 +3,7 @@ package GraphStructure;
 import java.io.*;
 import java.util.List;
 
-public class GraphWriter {
+class GraphWriter {
 
     public static void WriteToLineFile(int[][] edges, double[][] nodes, String nodesPath, String edgesPath) throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter(nodesPath, "UTF-8");

@@ -30,10 +30,10 @@ public class GraphParserPBF {
     private final String binaryPathOffsets = FilePaths.binBWOffsets;
     private final String binaryPathAmenities = FilePaths.binBWAmenities;
 
-    PbfIterator iterator;
-    InputStream stream;
+    private PbfIterator iterator;
+    private InputStream stream;
 
-    HashMap<Long, double[]> nodeLookup;
+    private HashMap<Long, double[]> nodeLookup;
     private double[][] nodes;
     private int[][] edges;
     private int wayCount = 0;
@@ -46,7 +46,7 @@ public class GraphParserPBF {
         nodeLookup = new HashMap<>();
     }
 
-    public void parseIterative() throws IOException {
+    private void parseIterative() throws IOException {
         // desirable highway tags.
         List<String> ped = Arrays.asList("residential", "service", "living_street", "pedestrian", "track",
                 "footway", "bridleway", "steps", "path", "cycleway", "trunk", "primary", "secondary", "tertiary",

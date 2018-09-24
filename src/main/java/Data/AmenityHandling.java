@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class AmenityHandling {
 
-    private static List<String> desiredAmenitiesValues = Arrays.asList(
+    private static final List<String> desiredAmenitiesValues = Arrays.asList(
             "pub",
             "bar",
             "biergarten",
