@@ -1,7 +1,7 @@
 package GraphStructure;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.List;
 
 public class GraphWriter {
 
@@ -25,7 +25,7 @@ public class GraphWriter {
         writer.close();
     }
 
-    private void writeAmenities(ArrayList<String[]> amenities, ArrayList<Double[]> amenityLatLon, String amenityPath) throws IOException {
+    public static void WriteAmenitiesToLineFile(List<String[]> amenities, List<double[]> amenityLatLon, String amenityPath) throws IOException {
 
         FileWriter fileWriter = new FileWriter(amenityPath);
         PrintWriter printWriter = new PrintWriter(fileWriter);

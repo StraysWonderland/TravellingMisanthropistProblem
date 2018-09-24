@@ -14,7 +14,10 @@ import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.pbf.seq.PbfIterator;
 import gnu.trove.list.TLongList;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import static GraphStructure.GraphWriter.WriteToLineFile;
@@ -25,6 +28,7 @@ public class GraphParserPBF {
     private final String binaryPathNodes = FilePaths.binBWNodes;
     private final String binaryPathEdges = FilePaths.binBWEdges;
     private final String binaryPathOffsets = FilePaths.binBWOffsets;
+    private final String binaryPathAmenities = FilePaths.binBWAmenities;
 
     PbfIterator iterator;
     InputStream stream;
@@ -181,6 +185,7 @@ public class GraphParserPBF {
             */
 
             WriteToLineFile(edges, nodes, binaryPathNodes, binaryPathEdges);
+            GraphWriter.WriteAmenitiesToLineFile(amenities, amenityLatLon, binaryPathAmenities);
             System.out.println("graph serialized");
 
 
