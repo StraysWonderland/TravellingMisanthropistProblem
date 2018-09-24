@@ -5,7 +5,7 @@ import Data.FilePaths;
 import java.io.*;
 import java.util.Arrays;
 
-public class OsmParser {
+class OsmParser {
     // TODO: change to germany when needed
     private final String pbfPath = FilePaths.pbfBW;
 
@@ -15,9 +15,7 @@ public class OsmParser {
 
 
     private void readFromByteFile(String graphPath) throws IOException {
-        InputStream fis = null;
-        try {
-            fis = new FileInputStream(graphPath);
+        try (InputStream fis = new FileInputStream(graphPath)) {
             ObjectInputStream o = new ObjectInputStream(fis);
             edges = (int[][]) o.readObject();
             vertices = (double[][]) o.readObject();
@@ -33,7 +31,6 @@ public class OsmParser {
             e.printStackTrace();
             System.out.println("File contains wrong object type!");
         } finally {
-            fis.close();
             System.exit(5);
         }
 

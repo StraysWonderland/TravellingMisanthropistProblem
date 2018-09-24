@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Graph {
-    public HashMap<String, LinkedList<Integer>> nodeGrid;
+    private HashMap<String, LinkedList<Integer>> nodeGrid;
     int nodeCount = 0;
     int edgeCount = 0;
     int amenityCount = 0;
-    String edgesPath = FilePaths.binBWEdges;
+    final String edgesPath = FilePaths.binBWEdges;
     String nodesPath = FilePaths.binBWNodes;
     private int[][] edges;
     private double[][] nodes;
@@ -79,7 +79,7 @@ public class Graph {
         }
     }
 
-    private void loadEdges() throws FileNotFoundException, IOException {
+    private void loadEdges() throws IOException {
         String line;
         BufferedReader bf = new BufferedReader(new FileReader(edgesPath));
         // Read number of edges and create an array with the same size to store them.
@@ -114,7 +114,7 @@ public class Graph {
         bf.close();
     }
 
-    private void loadNodes() throws FileNotFoundException, IOException {
+    private void loadNodes() throws IOException {
         BufferedReader bf = new BufferedReader(new FileReader(nodesPath));
         // Read number of nodes and create an array with the same size to store them.
         String line = bf.readLine();

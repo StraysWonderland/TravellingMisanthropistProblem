@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class HighwayHandling {
 
-    private static List<String> desiredTypesValues = Arrays.asList(
+    private static final List<String> desiredTypesValues = Arrays.asList(
             "motorway",
             "trunk",
             "primary",
