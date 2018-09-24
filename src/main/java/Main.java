@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 @Controller
@@ -29,7 +30,12 @@ public class Main {
 
     // start by parsing the graph; then launch springboot
     public static void main(String[] args) {
-        // graphParserPBF = new GraphParserPBF();
+         graphParserPBF = new GraphParserPBF();
+        try {
+            graphParserPBF.retrieveAmenityPOIs();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         // graphParserPBF.parseFromPbf();
 
         graph = new Graph();

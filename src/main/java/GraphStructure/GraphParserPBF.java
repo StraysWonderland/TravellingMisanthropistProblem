@@ -35,11 +35,14 @@ public class GraphParserPBF {
     private int wayCount = 0;
     private int nodeCount = 0;
 
+    private List<String[]> amenities = new ArrayList<>();
+    private List<double[]> amenityLatLon = new ArrayList<>();
+
     public GraphParserPBF() {
         nodeLookup = new HashMap<>();
     }
 
-    public void parseIterative( ) throws IOException {
+    public void parseIterative() throws IOException {
         // desirable highway tags.
         List<String> ped = Arrays.asList("residential", "service", "living_street", "pedestrian", "track",
                 "footway", "bridleway", "steps", "path", "cycleway", "trunk", "primary", "secondary", "tertiary",
@@ -129,7 +132,7 @@ public class GraphParserPBF {
             double destNodeLng = nodes[2][edge[2]];
             double dist = Distance.euclideanDistance(startNodeLat, startNodeLng, destNodeLat, destNodeLng);
 
-            edge[3] = (int) (dist*10000);
+            edge[3] = (int) (dist * 10000);
         }
     }
 
@@ -298,20 +301,30 @@ public class GraphParserPBF {
         java.util.Arrays.sort(edges, (a, b) -> (Integer.compare(a[0], b[0])));
     }
 
-    private void retrieveAmenityPOIs() {
-        iterator = new PbfIterator(stream, false);
+    public void retrieveAmenityPOIs() throws FileNotFoundException {
+        InputStream input = new FileInputStream(pbfPath);
+        OsmIterator iterator = new PbfIterator(input, true);
         for (EntityContainer container : iterator) {
             if (container.getType() == EntityType.Node) {
                 OsmNode node = (OsmNode) container.getEntity();
                 Map<String, String> tags = OsmModelUtil.getTagsAsMap(node);
-                String amenity = tags.get("amenity");
-                // TODO: check for desired leisures and add to a leisureList
-                if (AmenityHandling.isAmenity(amenity)) {
-                    System.out.println(String.format("%-15s %-40s %-15f %-15f",
-                            node.getId(),
-                            tags.get("name"),
+                String amenityTag = tags.get("amenity");
+                if (AmenityHandling.isAmenity(amenityTag)) {
+                    String[] s = new String[2];
+                    s[0] = tags.get("name");
+                    s[1] = amenityTag;
+                    amenities.add(s);
+                    amenityLatLon.add(new double[]{
                             node.getLatitude(),
                             node.getLongitude()
+                    });
+
+                    System.out.println(String.format("%-15s %-15f %-15f %-40s %-20s",
+                            node.getId(),
+                            node.getLatitude(),
+                            node.getLongitude(),
+                            s[0],
+                            s[1]
                     ));
                 }
             }
