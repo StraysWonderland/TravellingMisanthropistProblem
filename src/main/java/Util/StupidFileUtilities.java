@@ -5,7 +5,7 @@ import Data.FilePaths;
 import java.io.*;
 import java.util.Arrays;
 
-class OsmParser {
+class StupidFileUtilities {
     // TODO: change to germany when needed
     private final String pbfPath = FilePaths.pbfBW;
 
@@ -20,7 +20,6 @@ class OsmParser {
             edges = (int[][]) o.readObject();
             vertices = (double[][]) o.readObject();
             offsets = (int[]) o.readObject();
-            fis.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("File could not be found!");
