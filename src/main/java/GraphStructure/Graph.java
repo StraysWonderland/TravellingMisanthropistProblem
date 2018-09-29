@@ -10,14 +10,21 @@ import java.util.LinkedList;
 
 public class Graph {
     private HashMap<String, LinkedList<Integer>> nodeGrid;
-    int nodeCount = 0;
-    int edgeCount = 0;
-    int amenityCount = 0;
+    private HashMap<String, LinkedList<Integer>> amenityGrid;
+
     final String edgesPath = FilePaths.binBWEdges;
     String nodesPath = FilePaths.binBWNodes;
+
+    int edgeCount = 0;
     private int[][] edges;
+
+    int nodeCount = 0;
     private double[][] nodes;
+
     private int[] offsets;
+
+    int amenityCount = 0;
+    private double[][] amenities;
 
     private void createNodeGrid() {
         nodeGrid = new HashMap<>();
@@ -33,7 +40,6 @@ public class Graph {
             }
         }
     }
-
 
     public int getNearestNode(double[] latLng) {
         int nearestNodeIndex = -1;
