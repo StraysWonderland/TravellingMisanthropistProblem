@@ -28,15 +28,24 @@ public class Graph {
 
     private void createNodeGrid() {
         nodeGrid = new HashMap<>();
-        for (int i = 0; i < nodes[0].length; i++) {
-            String gridKey = (double) Math.round(nodes[0][i] * 10) / 10 + "-"
-                    + (double) Math.round(nodes[1][i] * 10) / 10;
-            if (nodeGrid.containsKey(gridKey)) {
-                nodeGrid.get(gridKey).add(i);
+        createGrid(nodes, nodeGrid);
+    }
+
+    private void createAmenityGrid() {
+        amenityGrid = new HashMap<>();
+        createGrid(amenities, amenityGrid);
+    }
+
+    private void createGrid(double[][] targetNodes, HashMap<String, LinkedList<Integer>> targetGrid) {
+        for (int i = 0; i < targetNodes[0].length; i++) {
+            String gridKey = (double) Math.round(targetNodes[0][i] * 10) / 10 + "-"
+                    + (double) Math.round(targetNodes[1][i] * 10) / 10;
+            if (targetGrid.containsKey(gridKey)) {
+                targetGrid.get(gridKey).add(i);
             } else {
                 LinkedList<Integer> nodesInCell = new LinkedList<>();
                 nodesInCell.add(i);
-                nodeGrid.put(gridKey, nodesInCell);
+                targetGrid.put(gridKey, nodesInCell);
             }
         }
     }
@@ -68,6 +77,7 @@ public class Graph {
         try {
             loadNodes();
             loadEdges();
+            createNodeGrid();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("Graph file not found, exiting!");
@@ -81,7 +91,6 @@ public class Graph {
             System.out.println(
                     "Number of edges or nodes is not consistent with the specification at the beginning of the graph file, exiting!");
             System.exit(3);
-
         }
     }
 
