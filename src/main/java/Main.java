@@ -17,15 +17,7 @@ import java.util.ArrayList;
 @Controller
 @EnableAutoConfiguration
 public class Main {
-
-    private static final String template = "Hello, %s!";
     private static Graph graph;
-
-    @RequestMapping("/greeting")
-    @ResponseBody
-    public String greeting(@RequestParam(value = "name", defaultValue = "Fuckface") String name) {
-        return String.format(template, name);
-    }
 
     // start by parsing the graph; then launch springboot
     public static void main(String[] args) {
