@@ -1,5 +1,9 @@
-var marker = L.marker();
+var marker;
+var markers = {};
 var markerDest = L.marker([48.77391, 9.17408]).addTo(map);
+var selectedMarker;
+var selectedLat;
+var selectedLon;
 var latlngs = [
     [17.385044, 78.486671],
     [16.506174, 80.648015]
@@ -27,28 +31,9 @@ map.on('click', function(e) {
 
     if (typeof (marker) === 'undefined') {
         map.stopLocate();
-
-        marker = new L.marker(e.latlng, {draggable : true});
+        marker = new L.marker(e.latlng, {draggable : false});
         marker.addTo(map);
     } else {
         marker.setLatLng(e.latlng);
     }
-    if(selectedMarker !== undefined){
-        document.getElementById("rankedArticles").style.display='block';
-        $("#description").text("");
-        var id = selectedMarker.id;
-        map.removeLayer(selectedMarker);
-        var newMarker;
-        if(selectedArticles.has(id)){
-            newMarker = L.marker([ selectedLat, selectedLon ], {icon: greenIcon})
-        }else{
-            newMarker = L.marker([ selectedLat, selectedLon ])
-        }
-        newMarker.addTo(markerGroup).bindTooltip(articles[id]['title']);
-        newMarker.id = id;
-        selectedMarker = undefined;
-    }
-
-    document.getElementById("headline").href = "https://www.wikipedia.de/";
-    document.getElementById("thumbnail").src = "https://upload.wikimedia.org/wikipedia/commons/8/80/Wikipedia-logo-v2.svg";
 });
