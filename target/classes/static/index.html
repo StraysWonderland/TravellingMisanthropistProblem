@@ -1,0 +1,90 @@
+<head xmlns="">
+    <meta charset="UTF-8">
+    <meta name="author" content="Stray"/>
+    <meta name="description" content="TravellingMisanthropistProblem"/>
+    <title>StraysWonderland</title>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <!-- leaflet CSS CDN -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="style/main.css"/>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+
+
+</head>
+
+<body>
+<div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Travelling Misanthropist Problem</h3>
+        </div>
+        <button type="button" id="pathButton"
+                class="btn btn-info navbar-btn"
+                onclick="CalculateSamplePath()"
+                Style="width: 90%">
+            calculate Path
+        </button>
+        <button type="button" id="calcRountTrip"
+                class="btn btn-info navbar-btn"
+                onclick="generateRoundTripBetweenMarkers()"
+                Style="width: 90%">
+            Calculate Roundtrip
+        </button>
+        <ul class=" list-unstyled components
+            ">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li>
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                    <li><a href="#">Page</a></li>
+                </ul>
+        </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content">
+        <div id="map"></div>
+    </div>
+
+</div>
+
+<script>
+    // Creating map
+    var mapOptions = {
+        center: [48.77391, 9.17408],
+        zoom: 15
+    };
+    var map = new L.map('map', mapOptions);
+
+    var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+    map.addLayer(layer);
+</script>
+
+<script src="scripts/mapInteraction.js"></script>
+
+<!-- context menu-->
+<nav class="context-menu">
+    <ul class="context-menu__items">
+        <li class="context-menu__item">
+            <a href="#" class="context-menu__link">
+                <i class="fa fa-eye"></i> Add Marker
+            </a>
+        </li>
+        <li class="context-menu__item">
+            <a href="#" class="context-menu__link">
+                <i class="fa fa-edit"></i> Clear All Markers
+            </a>
+        </li>
+    </ul>
+</nav>
+</body>
+</html>
