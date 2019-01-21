@@ -1,5 +1,13 @@
 # TravellingMisanthropistProblem
 
+# COMMIT BEFORE DEADLINE !!!
+The last 2 commits were done on sunday, 20.01.19, but at about 0 o´clock, so technically after the deadline.
+If a commit before 20.01.2019-23.55Uhr is to be chosen, 
+jump to the following commit: 
+
+    c6be0be28c181dab93aaf4abf62a7d3dfe147176
+
+
 Web application that, given a location, computes a round trip along nearby amenities based on a specified ranking.
 
 ## Implementation Details
