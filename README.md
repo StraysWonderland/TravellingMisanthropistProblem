@@ -2,11 +2,13 @@
 
 # COMMIT BEFORE DEADLINE !!!
 The last few commits were done on sunday, 20.01.19, but at about 0 o´clock, so technically after the deadline.
-If a commit before 20.01.2019-23.55Uhr is to be chosen, 
+If a commit strictly before 20.01.2019-23.55Uhr is to be chosen, 
 jump to the following commit: 
    
    [c6be0be28c181dab93aaf4abf62a7d3dfe147176](https://github.com/StraysWonderland/TravellingMisanthropistProblem/commit/c6be0be28c181dab93aaf4abf62a7d3dfe147176)
 
+When changing to the given commit, you will need to provide a pbf file in the root folder with the naming "bw.osm.pbf".
+and will have to run the project from an IDE, preferably IntelliJ
 
 
 Web application that, given a location, computes a round trip along nearby amenities based on a specified ranking.
