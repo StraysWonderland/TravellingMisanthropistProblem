@@ -1,7 +1,10 @@
 # TravellingMisanthropistProblem
 
-# COMMIT BEFORE DEADLINE !!!
-The last few commits were done on sunday, 20.01.19, but at about 0 o´clock, so technically after the deadline.
+
+Web application that, given a location, computes a round trip along nearby amenities based on a specified ranking.
+
+## commits before the deadline
+The last few commits were done on sunday, 20.01.19, but at about 0 o´clock, so technically after the deadline of 23.55 Uhr.
 If a commit strictly before 20.01.2019-23.55Uhr is to be chosen, 
 jump to the following commit: 
    
@@ -9,9 +12,6 @@ jump to the following commit:
 
 When changing to the given commit, you will need to provide a pbf file in the root folder with the naming "bw.osm.pbf".
 and will have to run the project from an IDE, preferably IntelliJ
-
-
-Web application that, given a location, computes a round trip along nearby amenities based on a specified ranking.
 
 ## Implementation Details
 - Java for Backend
