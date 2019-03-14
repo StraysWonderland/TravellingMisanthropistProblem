@@ -10,8 +10,11 @@ var pathMarker3;
 var markerGroup = L.featureGroup().addTo(map);
 
 var targetIndex;
-var linecolor = '#3030DD';
+var linecolor = '#377bdd';
 var sampleMessage;
+
+var displayCounter = 0;
+var amountOfArticles;
 
 map.locate({setView: true}).on('locationfound', function (e) {
     var marker = new L.marker(e.latlng, {draggable: true});
@@ -50,8 +53,45 @@ function CalculateSamplePath(e) {
 }
 
 function GetPOIsInRangeFunction(e) {
+    lat = pathMarker1.getLatLng().lat;
+    lng = pathMarker1.getLatLng().lng;
+
+    $.ajax({
+        type: "GET",
+        url: 'https://api.foursquare.com/v2/venues/explore?client_id=NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM&client_secret=TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK&v=20180323&limit=25&ll=' + lat + "," + lng + '&query=coffee',
+        async: true,
+        dataType: 'jsonp',
+        success: function (data) {
+            alert(data);
+        }
+    });
+
     console.log(" GET POIs Called");
 }
+
+function addMarkers() {
+    if (displayCounter <= amountOfArticles) {
+        var counter = displayCounter;
+        while (counter < (displayCounter + 30) && counter < amountOfArticles) {
+            var articleID = rankedArticleIDs[counter][0];
+            $('#rankedArticles').append("<p id=wiki-" + articleID + ">" + articles[articleID]['title'] + "</p>");
+            var coords = articles[articleID]['coordinates'];
+            if (coords != undefined) {
+                var marker = L.marker([coords.lat, coords.lon])
+                marker.addTo(markerGroup).bindTooltip(articles[articleID]['title']);
+                marker.id = articleID;
+                markers[articleID] = marker;
+            } else {
+                console.log(articleID)
+            }
+            counter++;
+        }
+        displayCounter += 30;
+    } else {
+        document.getElementById("showMoreArticles").style.visibility = 'hidden';
+    }
+}
+
 
 function generateRoundTripBetweenMarkers(e) {
     var markerlats = [
@@ -122,7 +162,6 @@ var active = "context-menu--active";
             menu.classList.add(active);
         }
     }
-
 })();
 
 map.on('click', function (e) {

@@ -10,7 +10,7 @@ var pathMarker3;
 var markerGroup = L.featureGroup().addTo(map);
 
 var targetIndex;
-var linecolor = '#3030DD';
+var linecolor = '#377bdd';
 var sampleMessage;
 
 map.locate({setView: true}).on('locationfound', function (e) {
@@ -20,7 +20,6 @@ map.locate({setView: true}).on('locationfound', function (e) {
 
 
 function CalculateSamplePath(e) {
-
     var startNodeCoords = [pathMarker1.getLatLng().lat, pathMarker1.getLatLng().lng];
     var targetNodeCoords = [pathMarker2.getLatLng().lat, pathMarker2.getLatLng().lng];
 
@@ -40,16 +39,27 @@ function CalculateSamplePath(e) {
                 color: linecolor
             }).addTo(map);
             map.fitBounds(polyline.getBounds());
-
         },
         error: function () {
             sampleMessage = "target Index failed"
         }
     });
-
 }
 
 function GetPOIsInRangeFunction(e) {
+    lat = pathMarker1.getLatLng().lat;
+    lng = pathMarker1.getLatLng().lng;
+
+    $.ajax({
+        type: "GET",
+        url: 'https://api.foursquare.com/v2/venues/explore?client_id=NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM&client_secret=TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK&v=20180323&limit=25&ll=' + lat + "," + lng + '&query=coffee',
+        async: true,
+        dataType: 'jsonp',
+        success: function (data) {
+            alert(data);
+        }
+    });
+
     console.log(" GET POIs Called");
 }
 
@@ -122,7 +132,6 @@ var active = "context-menu--active";
             menu.classList.add(active);
         }
     }
-
 })();
 
 map.on('click', function (e) {
