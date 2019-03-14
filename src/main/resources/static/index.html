@@ -24,20 +24,29 @@
         <div class="sidebar-header">
             <h3>Travelling Misanthropist Problem</h3>
         </div>
-        <button type="button" id="pathButton"
-                class="btn btn-info navbar-btn"
-                onclick="CalculateSamplePath()"
-                Style="width: 90%">
-            calculate Path
-        </button>
-        <button type="button" id="calcRountTrip"
-                class="btn btn-info navbar-btn"
-                onclick="generateRoundTripBetweenMarkers()"
-                Style="width: 90%">
-            Calculate Roundtrip
-        </button>
-        <ul class=" list-unstyled components
-            ">
+        <div class="col-sm-12 text-center">
+            <button type="button" id="pathButton"
+                    class="btn btn-info navbar-btn"
+                    onclick="CalculateSamplePath()"
+                    Style="width: 90%">
+                calculate Path
+            </button>
+
+            <button type="button" id="getNearbyPOIS"
+                    class="btn btn-info navbar-btn"
+                    onclick="GetPOIsInRangeFunction()"
+                    Style="width: 90%">
+                Get nearby bars
+            </button>
+
+            <button type="button" id="calcRountTrip"
+                    class="btn btn-info navbar-btn"
+                    onclick="generateRoundTripBetweenMarkers()"
+                    Style="width: 90%">
+                Calculate Roundtrip
+            </button>
+        </div>
+        <ul class=" list-unstyled components ">
             <li class="active"><a href="#">Home</a></li>
             <li><a href="#">About</a></li>
             <li>
