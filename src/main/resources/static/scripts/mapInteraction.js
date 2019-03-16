@@ -10,8 +10,33 @@ var pathMarker3;
 var markerGroup = L.featureGroup().addTo(map);
 
 var targetIndex;
-var linecolor = '#377bdd';
+var linecolor = '#2823dd';
 var sampleMessage;
+
+var markerGroup = L.featureGroup().addTo(map);
+
+// foursquare api properties
+var numberOfRetrievedPOIS;
+var nearbyVenues = [];
+
+var redIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var greenIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 
 map.locate({setView: true}).on('locationfound', function (e) {
     var marker = new L.marker(e.latlng, {draggable: true});
