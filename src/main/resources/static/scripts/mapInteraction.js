@@ -90,6 +90,31 @@ function GetPOIsInRangeFunction(e) {
                 nearbyVenues.push(foundItems[i].venue);
             }
 
+
+            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
+                var venue = nearbyVenues[i];
+                var lat = venue.location.lat;
+                var lng = venue.location.lng;
+
+                var marker = L.marker([lat, lng], {icon: redIcon}, {Tooltip: venue.name});
+
+                marker.addTo(markerGroup);
+                marker.bindPopup(venue.name + " " + venue.location.formattedAddress);
+                marker.id = venue.id;
+                map.addLayer(marker);
+            }
+            /*  for (i = 0; i < numberOfRetrievedPOIS; i++) {
+                  var coords = foundItems[i];
+                  if (coords != undefined) {
+                      var marker = L.marker([ coords.lat, coords.lon ])
+                      marker.addTo(markerGroup).bindTooltip(articles[articleID]['title']);
+                      marker.id = articleID;
+                      markers[articleID] = marker;
+                  }else{
+                      console.log(articleID)
+                  }
+              }*/
+            console.log(data.response.groups[0].items);
         }
     });
 
