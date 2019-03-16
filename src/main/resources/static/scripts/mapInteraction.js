@@ -81,7 +81,6 @@ function GetPOIsInRangeFunction(e) {
         async: true,
         dataType: 'jsonp',
         success: function (data) {
-            alert(data);
 
             numberOfRetrievedPOIS = data.response.groups[0].items.length;
             var foundItems = data.response.groups[0].items;
