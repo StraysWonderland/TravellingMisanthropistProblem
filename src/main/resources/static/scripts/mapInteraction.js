@@ -121,18 +121,16 @@ function GetPOIsInRangeFunction(e) {
     console.log(" GET POIs Called");
 }
 
-function generateRoundTripBetweenMarkers(e) {
-    var markerlats = [
-        pathMarker1.getLatLng().lat,
-        pathMarker2.getLatLng().lat,
-        pathMarker3.getLatLng().lat,
-    ];
 
-    var markerlngs = [
-        pathMarker1.getLatLng().lng,
-        pathMarker2.getLatLng().lng,
-        pathMarker3.getLatLng().lng,
-    ];
+function generateRoundTripBetweenMarkers(e) {
+    var markerlats = [];
+    var markerlngs = [];
+
+    for (var i = 0; i < 10; i++) {
+        var venue = nearbyVenues[i];
+        markerlats.push(venue.location.lat);
+        markerlngs.push(venue.location.lng);
+    }
 
     var urlString = "/generateRoundtrip/" + markerlats + "/" + markerlngs;
     $.ajax({
