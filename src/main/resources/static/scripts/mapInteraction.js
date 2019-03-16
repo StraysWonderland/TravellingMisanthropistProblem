@@ -82,6 +82,14 @@ function GetPOIsInRangeFunction(e) {
         dataType: 'jsonp',
         success: function (data) {
             alert(data);
+
+            numberOfRetrievedPOIS = data.response.groups[0].items.length;
+            var foundItems = data.response.groups[0].items;
+
+            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
+                nearbyVenues.push(foundItems[i].venue);
+            }
+
         }
     });
 
