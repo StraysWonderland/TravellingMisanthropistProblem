@@ -10,8 +10,33 @@ var pathMarker3;
 var markerGroup = L.featureGroup().addTo(map);
 
 var targetIndex;
-var linecolor = '#377bdd';
+var linecolor = '#2823dd';
 var sampleMessage;
+
+var markerGroup = L.featureGroup().addTo(map);
+
+// foursquare api properties
+var numberOfRetrievedPOIS;
+var nearbyVenues = [];
+
+var redIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var greenIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 
 map.locate({setView: true}).on('locationfound', function (e) {
     var marker = new L.marker(e.latlng, {draggable: true});
@@ -56,25 +81,55 @@ function GetPOIsInRangeFunction(e) {
         async: true,
         dataType: 'jsonp',
         success: function (data) {
-            alert(data);
+
+            numberOfRetrievedPOIS = data.response.groups[0].items.length;
+            var foundItems = data.response.groups[0].items;
+
+            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
+                nearbyVenues.push(foundItems[i].venue);
+            }
+
+
+            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
+                var venue = nearbyVenues[i];
+                var lat = venue.location.lat;
+                var lng = venue.location.lng;
+
+                var marker = L.marker([lat, lng], {icon: redIcon}, {Tooltip: venue.name});
+
+                marker.addTo(markerGroup);
+                marker.bindPopup(venue.name + " " + venue.location.formattedAddress);
+                marker.id = venue.id;
+                map.addLayer(marker);
+            }
+            /*  for (i = 0; i < numberOfRetrievedPOIS; i++) {
+                  var coords = foundItems[i];
+                  if (coords != undefined) {
+                      var marker = L.marker([ coords.lat, coords.lon ])
+                      marker.addTo(markerGroup).bindTooltip(articles[articleID]['title']);
+                      marker.id = articleID;
+                      markers[articleID] = marker;
+                  }else{
+                      console.log(articleID)
+                  }
+              }*/
+            console.log(data.response.groups[0].items);
         }
     });
 
     console.log(" GET POIs Called");
 }
 
-function generateRoundTripBetweenMarkers(e) {
-    var markerlats = [
-        pathMarker1.getLatLng().lat,
-        pathMarker2.getLatLng().lat,
-        pathMarker3.getLatLng().lat,
-    ];
 
-    var markerlngs = [
-        pathMarker1.getLatLng().lng,
-        pathMarker2.getLatLng().lng,
-        pathMarker3.getLatLng().lng,
-    ];
+function generateRoundTripBetweenMarkers(e) {
+    var markerlats = [];
+    var markerlngs = [];
+
+    for (var i = 0; i < 10; i++) {
+        var venue = nearbyVenues[i];
+        markerlats.push(venue.location.lat);
+        markerlngs.push(venue.location.lng);
+    }
 
     var urlString = "/generateRoundtrip/" + markerlats + "/" + markerlngs;
     $.ajax({
