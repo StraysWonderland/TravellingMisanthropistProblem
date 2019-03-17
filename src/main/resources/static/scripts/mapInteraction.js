@@ -3,15 +3,11 @@ var polyline;
 var markerCount = 0;
 var maxMarkers = 10;
 
-var pathMarker1;
-var pathMarker2;
-var pathMarker3;
-
-var markerGroup = L.featureGroup().addTo(map);
-
 var targetIndex;
 var linecolor = '#2823dd';
 var sampleMessage;
+
+var locationMarker;
 
 var markerGroup = L.featureGroup().addTo(map);
 
@@ -39,13 +35,13 @@ var greenIcon = new L.Icon({
 
 
 map.locate({setView: true}).on('locationfound', function (e) {
-    var marker = new L.marker(e.latlng, {draggable: true});
-    map.addLayer(marker);
+    locationMarker = new L.marker(e.latlng, {draggable: true});
+    locationMarker.addTo(map);
 });
 
 
 function CalculateSamplePath(e) {
-    var startNodeCoords = [pathMarker1.getLatLng().lat, pathMarker1.getLatLng().lng];
+    var startNodeCoords = [locationMarker.getLatLng().lat, locationMarker.getLatLng().lng];
     var targetNodeCoords = [pathMarker2.getLatLng().lat, pathMarker2.getLatLng().lng];
 
     var urlString = "/shortestPathFromTo/" + startNodeCoords + "/" + targetNodeCoords;
@@ -72,18 +68,23 @@ function CalculateSamplePath(e) {
 }
 
 function GetPOIsInRangeFunction(e) {
-    lat = pathMarker1.getLatLng().lat;
-    lng = pathMarker1.getLatLng().lng;
+    var lat = locationMarker.getLatLng().lat;
+    var lng = locationMarker.getLatLng().lng;
+    console.log(" GET POIs Called on lat: " + lat + " lng: " + lng);
 
     $.ajax({
         type: "GET",
-        url: 'https://api.foursquare.com/v2/venues/explore?client_id=NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM&client_secret=TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK&v=20180323&limit=25&ll=' + lat + "," + lng + '&query=coffee',
+        url: 'https://api.foursquare.com/v2/venues/explore?client_id=NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM&client_secret=TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK&v=20180323&limit=25&radius=1000&ll=' + lat + "," + lng + '&query=coffee',
         async: true,
         dataType: 'jsonp',
         success: function (data) {
 
             numberOfRetrievedPOIS = data.response.groups[0].items.length;
             var foundItems = data.response.groups[0].items;
+
+            markerGroup.clearLayers();
+            markerGroup = L.featureGroup().addTo(map);
+            nearbyVenues = [];
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
                 nearbyVenues.push(foundItems[i].venue);
@@ -95,35 +96,26 @@ function GetPOIsInRangeFunction(e) {
                 var lat = venue.location.lat;
                 var lng = venue.location.lng;
 
-                var marker = L.marker([lat, lng], {icon: redIcon}, {Tooltip: venue.name});
+                var marker = new L.marker([lat, lng], {icon: redIcon}, {Tooltip: venue.name});
 
                 marker.addTo(markerGroup);
                 marker.bindPopup(venue.name + " " + venue.location.formattedAddress);
                 marker.id = venue.id;
                 map.addLayer(marker);
             }
-            /*  for (i = 0; i < numberOfRetrievedPOIS; i++) {
-                  var coords = foundItems[i];
-                  if (coords != undefined) {
-                      var marker = L.marker([ coords.lat, coords.lon ])
-                      marker.addTo(markerGroup).bindTooltip(articles[articleID]['title']);
-                      marker.id = articleID;
-                      markers[articleID] = marker;
-                  }else{
-                      console.log(articleID)
-                  }
-              }*/
-            console.log(data.response.groups[0].items);
+
+            console.log(nearbyVenues);
         }
     });
-
-    console.log(" GET POIs Called");
 }
 
 
 function generateRoundTripBetweenMarkers(e) {
     var markerlats = [];
     var markerlngs = [];
+
+    markerlats.push(locationMarker.getLatLng().lat);
+    markerlngs.push(locationMarker.getLatLng().lng);
 
     for (var i = 0; i < 10; i++) {
         var venue = nearbyVenues[i];
@@ -190,19 +182,12 @@ var active = "context-menu--active";
 })();
 
 map.on('click', function (e) {
-
-    if (typeof (pathMarker1) === 'undefined') {
+    if (typeof (locationMarker) === 'undefined') {
         map.stopLocate();
-        pathMarker1 = new L.marker(e.latlng, {draggable: true});
-        pathMarker1.addTo(map);
+        locationMarker = new L.marker(e.latlng, {draggable: true});
+        locationMarker.addTo(map);
 
-    } else if (typeof(pathMarker2) === 'undefined') {
-        pathMarker2 = new L.marker(e.latlng, {draggable: true});
-        pathMarker2.addTo(map);
-    } else if (typeof(pathMarker3) === 'undefined') {
-        pathMarker3 = new L.marker(e.latlng, {draggable: true});
-        pathMarker3.addTo(map);
     } else {
-        pathMarker3 = new L.marker(e.latlng, {draggable: true});
+        locationMarker.setLatLng(e.latlng).update();
     }
 });
