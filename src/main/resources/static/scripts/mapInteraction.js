@@ -1,8 +1,5 @@
 var polyline;
 
-var markerCount = 0;
-var maxMarkers = 10;
-
 var targetIndex;
 var linecolor = '#2823dd';
 var sampleMessage;
@@ -10,10 +7,12 @@ var sampleMessage;
 var locationMarker;
 
 var markerGroup = L.featureGroup().addTo(map);
-
+markerGroup.on("contextmenu", groupRightClick);
 // foursquare api properties
 var numberOfRetrievedPOIS;
 var nearbyVenues = [];
+var selectedVenues = [];
+
 
 var redIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -33,10 +32,12 @@ var greenIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-
 map.locate({setView: true}).on('locationfound', function (e) {
-    locationMarker = new L.marker(e.latlng, {draggable: true});
-    locationMarker.addTo(map);
+    locationMarker = new L.marker(e.latlng, {draggable: true}).addTo(map);
+});
+
+$("#map").bind('contextmenu', function (e) {
+    return false;
 });
 
 
@@ -53,7 +54,7 @@ function CalculateSamplePath(e) {
             var latlngs = response.split(",").map(function (e) {
                 return e.split("_").map(Number);
             });
-            if (polyline != undefined) {
+            if (polyline !== undefined) {
                 map.removeLayer(polyline)
             }
             polyline = L.polyline(latlngs, {
@@ -83,13 +84,12 @@ function GetPOIsInRangeFunction(e) {
             var foundItems = data.response.groups[0].items;
 
             markerGroup.clearLayers();
-            markerGroup = L.featureGroup().addTo(map);
             nearbyVenues = [];
+            selectedVenues = [];
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
                 nearbyVenues.push(foundItems[i].venue);
             }
-
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
                 var venue = nearbyVenues[i];
@@ -99,11 +99,10 @@ function GetPOIsInRangeFunction(e) {
                 var marker = new L.marker([lat, lng], {icon: redIcon}, {Tooltip: venue.name});
 
                 marker.addTo(markerGroup);
-                marker.bindPopup(venue.name + " " + venue.location.formattedAddress);
-                marker.id = venue.id;
+                marker.bindPopup(venue.name + "<br>" + venue.location.formattedAddress);
+                marker.id = i;
                 map.addLayer(marker);
             }
-
             console.log(nearbyVenues);
         }
     });
@@ -117,8 +116,8 @@ function generateRoundTripBetweenMarkers(e) {
     markerlats.push(locationMarker.getLatLng().lat);
     markerlngs.push(locationMarker.getLatLng().lng);
 
-    for (var i = 0; i < 10; i++) {
-        var venue = nearbyVenues[i];
+    for (var i = 0; i < selectedVenues.length; i++) {
+        var venue = selectedVenues[i];
         markerlats.push(venue.location.lat);
         markerlngs.push(venue.location.lng);
     }
@@ -132,7 +131,7 @@ function generateRoundTripBetweenMarkers(e) {
             var latlngs = response.split(",").map(function (e) {
                 return e.split("_").map(Number);
             });
-            if (polyline != undefined) {
+            if (polyline !== undefined) {
                 map.removeLayer(polyline)
             }
             polyline = L.polyline(latlngs, {
@@ -148,38 +147,28 @@ function generateRoundTripBetweenMarkers(e) {
     });
 }
 
-/* CONTEXT MENU */
-/* VARIABLES */
-var menu = document.querySelector("#context-menu");
-var menuState = 0;
-var active = "context-menu--active";
+function groupRightClick(event) {
+    var marker = event.layer;
+    var id = event.layer.id;
 
-/* CONTEXT MENU FUNCTION */
-(function () {
+    marker.setIcon(greenIcon);
+    /*    map.removeLayer(marker);
+        var coords = nearbyVenues[id].getLatLng();
+        var newMarker = L.marker([coords.lat, coords.lng]);
+        newMarker.addTo(markerGroup);
+        newMarker.id = id;*/
 
-    "use strict";
+    var selectedVenue = nearbyVenues[id];
+    selectedVenues.push(selectedVenue);
 
-    var taskItems = document.querySelectorAll(".task");
-
-    for (var i = 0, len = taskItems.length; i < len; i++) {
-        var taskItem = taskItems[i];
-        contextMenuListener(taskItem);
+    if(selectedVenues.length > 1 && selectedVenues.length < 23){
+        document.getElementById("calcRountTrip").style.visibility = "visible";
+    } else {
+        document.getElementById("calcRountTrip").style.visibility = "hidden";
     }
 
-    function contextMenuListener(el) {
-        el.addEventListener("contextmenu", function (e) {
-            e.preventDefault();
-            toggleMenuOn();
-        });
-    }
 
-    function toggleMenuOn() {
-        if (menuState !== 1) {
-            menuState = 1;
-            menu.classList.add(active);
-        }
-    }
-})();
+}
 
 map.on('click', function (e) {
     if (typeof (locationMarker) === 'undefined') {
