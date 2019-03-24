@@ -19,9 +19,12 @@ public class Graph {
     final String edgesPath = FilePaths.binBWEdges;
     String nodesPath = FilePaths.binBWNodes;
 
-    private int[][] edges;
-    private double[][] nodes;
-    private int[] offsets;
+   public int[] edgeSource;
+   public int[] edgeTarget;
+   public int[] edgeDistance;
+
+    public double[][] nodes;
+    public int[] offsets;
 
     int amenityCount = 0;
     private double[][] amenities;
@@ -122,17 +125,19 @@ public class Graph {
 
         currentLine = bf.readLine();
         int numberOfEdges = Integer.parseInt(currentLine);
-        edges = new int[3][numberOfEdges];
+        edgeSource = new int[numberOfEdges];
+        edgeTarget = new int[numberOfEdges];
+        edgeDistance = new int[numberOfEdges];
 
 
         currentLine = bf.readLine();
         while (edgeCounter < numberOfEdges) {
             String edgeData[] = currentLine.split(" ");
-            edges[0][edgeCounter] = Integer.parseInt(edgeData[0]);
-            edges[1][edgeCounter] = Integer.parseInt(edgeData[1]);
-            edges[2][edgeCounter] = Integer.parseInt(edgeData[2]);
-            if (nodeCounter < edges[0][edgeCounter]) {
-                nodeCounter = edges[0][edgeCounter];
+            edgeSource[edgeCounter] = Integer.parseInt(edgeData[0]);
+            edgeTarget[edgeCounter] = Integer.parseInt(edgeData[1]);
+            edgeDistance[edgeCounter] = Integer.parseInt(edgeData[2]);
+            if (nodeCounter < edgeSource[edgeCounter]) {
+                nodeCounter = edgeSource[edgeCounter];
                 offsets[nodeCounter] = edgeCounter;
             }
             edgeCounter++;
@@ -142,8 +147,14 @@ public class Graph {
     }
 
 
-    public int[][] getEdges() {
-        return edges;
+    public int[] getEdgeSource() {
+        return edgeSource;
+    }
+    public int[] getEdgeTarget() {
+        return edgeTarget;
+    }
+    public int[] getEdgeDistance() {
+        return edgeDistance;
     }
 
     public double[][] getNodes() {
