@@ -1,30 +1,48 @@
 var polyline;
 
-var markerCount = 0;
-var maxMarkers = 10;
-
-var pathMarker1;
-var pathMarker2;
-var pathMarker3;
-
-var markerGroup = L.featureGroup().addTo(map);
-
 var targetIndex;
-var linecolor = '#377bdd';
+var linecolor = '#2823dd';
 var sampleMessage;
 
-var displayCounter = 0;
-var amountOfArticles;
+var locationMarker;
+
+var markerGroup = L.featureGroup().addTo(map);
+markerGroup.on("contextmenu", groupRightClick);
+// foursquare api properties
+var numberOfRetrievedPOIS;
+var nearbyVenues = [];
+var selectedVenues = [];
+
+
+var redIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var greenIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
 
 map.locate({setView: true}).on('locationfound', function (e) {
-    var marker = new L.marker(e.latlng, {draggable: true});
-    map.addLayer(marker);
+    locationMarker = new L.marker(e.latlng, {draggable: true}).addTo(map);
+});
+
+$("#map").bind('contextmenu', function (e) {
+    return false;
 });
 
 
 function CalculateSamplePath(e) {
-
-    var startNodeCoords = [pathMarker1.getLatLng().lat, pathMarker1.getLatLng().lng];
+    var startNodeCoords = [locationMarker.getLatLng().lat, locationMarker.getLatLng().lng];
     var targetNodeCoords = [pathMarker2.getLatLng().lat, pathMarker2.getLatLng().lng];
 
     var urlString = "/shortestPathFromTo/" + startNodeCoords + "/" + targetNodeCoords;
@@ -36,75 +54,71 @@ function CalculateSamplePath(e) {
             var latlngs = response.split(",").map(function (e) {
                 return e.split("_").map(Number);
             });
-            if (polyline != undefined) {
+            if (polyline !== undefined) {
                 map.removeLayer(polyline)
             }
             polyline = L.polyline(latlngs, {
                 color: linecolor
             }).addTo(map);
             map.fitBounds(polyline.getBounds());
-
         },
         error: function () {
             sampleMessage = "target Index failed"
         }
     });
-
 }
 
 function GetPOIsInRangeFunction(e) {
-    lat = pathMarker1.getLatLng().lat;
-    lng = pathMarker1.getLatLng().lng;
+    var lat = locationMarker.getLatLng().lat;
+    var lng = locationMarker.getLatLng().lng;
+    console.log(" GET POIs Called on lat: " + lat + " lng: " + lng);
 
     $.ajax({
         type: "GET",
-        url: 'https://api.foursquare.com/v2/venues/explore?client_id=NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM&client_secret=TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK&v=20180323&limit=25&ll=' + lat + "," + lng + '&query=coffee',
+        url: 'https://api.foursquare.com/v2/venues/explore?client_id=NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM&client_secret=TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK&v=20180323&limit=25&radius=1000&ll=' + lat + "," + lng + '&query=coffee',
         async: true,
         dataType: 'jsonp',
         success: function (data) {
-            alert(data);
+
+            numberOfRetrievedPOIS = data.response.groups[0].items.length;
+            var foundItems = data.response.groups[0].items;
+
+            reset();
+
+            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
+                nearbyVenues.push(foundItems[i].venue);
+            }
+
+            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
+                var venue = nearbyVenues[i];
+                var lat = venue.location.lat;
+                var lng = venue.location.lng;
+
+                var marker = new L.marker([lat, lng], {icon: redIcon}, {tooltip: venue.name});
+
+                marker.addTo(markerGroup);
+                marker.bindPopup(venue.name + "<br>" + venue.location.formattedAddress);
+                marker.id = i;
+                map.addLayer(marker);
+            }
+            console.log(nearbyVenues);
         }
     });
-
-    console.log(" GET POIs Called");
-}
-
-function addMarkers() {
-    if (displayCounter <= amountOfArticles) {
-        var counter = displayCounter;
-        while (counter < (displayCounter + 30) && counter < amountOfArticles) {
-            var articleID = rankedArticleIDs[counter][0];
-            $('#rankedArticles').append("<p id=wiki-" + articleID + ">" + articles[articleID]['title'] + "</p>");
-            var coords = articles[articleID]['coordinates'];
-            if (coords != undefined) {
-                var marker = L.marker([coords.lat, coords.lon])
-                marker.addTo(markerGroup).bindTooltip(articles[articleID]['title']);
-                marker.id = articleID;
-                markers[articleID] = marker;
-            } else {
-                console.log(articleID)
-            }
-            counter++;
-        }
-        displayCounter += 30;
-    } else {
-        document.getElementById("showMoreArticles").style.visibility = 'hidden';
-    }
 }
 
 
 function generateRoundTripBetweenMarkers(e) {
-    var markerlats = [
-        pathMarker1.getLatLng().lat,
-        pathMarker2.getLatLng().lat,
-        pathMarker3.getLatLng().lat,
-    ];
+    var markerlats = [];
+    var markerlngs = [];
 
-    var markerlngs = [
-        pathMarker1.getLatLng().lng,
-        pathMarker2.getLatLng().lng,
-        pathMarker3.getLatLng().lng,
-    ];
+    markerlats.push(locationMarker.getLatLng().lat);
+    markerlngs.push(locationMarker.getLatLng().lng);
+
+    for (var i = 0; i < selectedVenues.length; i++) {
+        var venue = selectedVenues[i];
+        markerlats.push(venue.location.lat);
+        markerlngs.push(venue.location.lng);
+    }
 
     var urlString = "/generateRoundtrip/" + markerlats + "/" + markerlngs;
     $.ajax({
@@ -115,7 +129,7 @@ function generateRoundTripBetweenMarkers(e) {
             var latlngs = response.split(",").map(function (e) {
                 return e.split("_").map(Number);
             });
-            if (polyline != undefined) {
+            if (polyline !== undefined) {
                 map.removeLayer(polyline)
             }
             polyline = L.polyline(latlngs, {
@@ -131,53 +145,45 @@ function generateRoundTripBetweenMarkers(e) {
     });
 }
 
-/* CONTEXT MENU */
-/* VARIABLES */
-var menu = document.querySelector("#context-menu");
-var menuState = 0;
-var active = "context-menu--active";
+function groupRightClick(event) {
+    var marker = event.layer;
+    var id = event.layer.id;
 
-/* CONTEXT MENU FUNCTION */
-(function () {
+    marker.setIcon(greenIcon);
+    /*    map.removeLayer(marker);
+        var coords = nearbyVenues[id].getLatLng();
+        var newMarker = L.marker([coords.lat, coords.lng]);
+        newMarker.addTo(markerGroup);
+        newMarker.id = id;*/
 
-    "use strict";
+    var selectedVenue = nearbyVenues[id];
+    selectedVenues.push(selectedVenue);
 
-    var taskItems = document.querySelectorAll(".task");
-
-    for (var i = 0, len = taskItems.length; i < len; i++) {
-        var taskItem = taskItems[i];
-        contextMenuListener(taskItem);
+    if(selectedVenues.length > 1 && selectedVenues.length < 23){
+        document.getElementById("calcRountTrip").style.visibility = "visible";
+    } else {
+        document.getElementById("calcRountTrip").style.visibility = "hidden";
     }
 
-    function contextMenuListener(el) {
-        el.addEventListener("contextmenu", function (e) {
-            e.preventDefault();
-            toggleMenuOn();
-        });
-    }
 
-    function toggleMenuOn() {
-        if (menuState !== 1) {
-            menuState = 1;
-            menu.classList.add(active);
-        }
-    }
-})();
+}
 
 map.on('click', function (e) {
-
-    if (typeof (pathMarker1) === 'undefined') {
+    if (typeof (locationMarker) === 'undefined') {
         map.stopLocate();
-        pathMarker1 = new L.marker(e.latlng, {draggable: true});
-        pathMarker1.addTo(map);
+        locationMarker = new L.marker(e.latlng, {draggable: true});
+        locationMarker.addTo(map);
 
-    } else if (typeof(pathMarker2) === 'undefined') {
-        pathMarker2 = new L.marker(e.latlng, {draggable: true});
-        pathMarker2.addTo(map);
-    } else if (typeof(pathMarker3) === 'undefined') {
-        pathMarker3 = new L.marker(e.latlng, {draggable: true});
-        pathMarker3.addTo(map);
     } else {
-        pathMarker3 = new L.marker(e.latlng, {draggable: true});
+        locationMarker.setLatLng(e.latlng).update();
     }
 });
+
+function reset(){
+    markerGroup.clearLayers();
+    nearbyVenues = [];
+    selectedVenues = [];
+    if (polyline !== undefined) {
+        map.removeLayer(polyline)
+    }
+}

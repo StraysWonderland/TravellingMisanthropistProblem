@@ -36,6 +36,7 @@ cmake-build-debug/
 
 # IntelliJ
 /out/
+/target/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -70,3 +71,15 @@ fabric.properties
 *.osm.pbf
 *.osm.*
 # End of https://www.gitignore.io/api/intellij
+*jar
+target/classes/static/index.html
+target/classes/static/scripts/mapInteraction.js
+target/classes/strayswonderland/TravelingMisanthropistProblem/Data/AmenityHandling.class
+target/classes/strayswonderland/TravelingMisanthropistProblem/Data/HighwayHandling.class
+target/classes/strayswonderland/TravelingMisanthropistProblem/DTO/Highway.class
+target/classes/strayswonderland/TravelingMisanthropistProblem/GraphStructure/Graph.class
+target/classes/strayswonderland/TravelingMisanthropistProblem/Pathing/Pathing.class
+target/classes/strayswonderland/TravelingMisanthropistProblem/Pathing/TravelingSalesmanProblem.class
+target/classes/strayswonderland/TravelingMisanthropistProblem/TravelingMisanthropistProblemApplication.class
+target/classes/strayswonderland/TravelingMisanthropistProblem/Util/Distance.class
+target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst

@@ -13,8 +13,6 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-
-
 </head>
 
 <body>
@@ -40,9 +38,9 @@
             </button>
 
             <button type="button" id="calcRountTrip"
-                    class="btn btn-info navbar-btn"
                     onclick="generateRoundTripBetweenMarkers()"
-                    Style="width: 90%">
+                    Style="width: 90%; visibility: hidden"
+                    class="btn btn-success">
                 Calculate Roundtrip
             </button>
         </div>
@@ -70,7 +68,7 @@
     // Creating map
     var mapOptions = {
         center: [48.77391, 9.17408],
-        zoom: 15
+        zoom: 13
     };
     var map = new L.map('map', mapOptions);
 
@@ -80,20 +78,5 @@
 
 <script src="scripts/mapInteraction.js"></script>
 
-<!-- context menu-->
-<nav class="context-menu">
-    <ul class="context-menu__items">
-        <li class="context-menu__item">
-            <a href="#" class="context-menu__link">
-                <i class="fa fa-eye"></i> Add Marker
-            </a>
-        </li>
-        <li class="context-menu__item">
-            <a href="#" class="context-menu__link">
-                <i class="fa fa-edit"></i> Clear All Markers
-            </a>
-        </li>
-    </ul>
-</nav>
 </body>
 </html>
