@@ -9,7 +9,7 @@ For parsing refer to following git repository:
    
 To run parser, place a pbf file in the root directory and name it "target.osm.pbf"
 Run the jar file preferably by running the command:
-   >  java  -jar  -Xmxs=16G TMPParser.jar
+   >  java  -jar  -Xmx=16G TMPParser.jar
    
 Alternatively, launch intelliJ and run the application ( set jav heapspace accordingly via Help -> customVMoptions -> Xmxs )
 
@@ -27,7 +27,7 @@ open the "TravelingMisanthropistProblem" Folder in IntelliJ-Idea and Run it.
 - Open cmd window in that Folder,
 - type and run following command:
 
-    > ./mvnw spring-boot:run -Drun.jvmArguments="-Xmx15G" -Drun.profiles=dev
+    > ./mvnw spring-boot:run -Drun.jvmArguments="-Xmx16G" -Drun.profiles=dev
 
 
 ## Using the Project
