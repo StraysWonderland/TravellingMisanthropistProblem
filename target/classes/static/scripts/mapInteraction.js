@@ -83,9 +83,7 @@ function GetPOIsInRangeFunction(e) {
             numberOfRetrievedPOIS = data.response.groups[0].items.length;
             var foundItems = data.response.groups[0].items;
 
-            markerGroup.clearLayers();
-            nearbyVenues = [];
-            selectedVenues = [];
+            reset();
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
                 nearbyVenues.push(foundItems[i].venue);
@@ -96,7 +94,7 @@ function GetPOIsInRangeFunction(e) {
                 var lat = venue.location.lat;
                 var lng = venue.location.lng;
 
-                var marker = new L.marker([lat, lng], {icon: redIcon}, {Tooltip: venue.name});
+                var marker = new L.marker([lat, lng], {icon: redIcon}, {tooltip: venue.name});
 
                 marker.addTo(markerGroup);
                 marker.bindPopup(venue.name + "<br>" + venue.location.formattedAddress);
@@ -180,3 +178,12 @@ map.on('click', function (e) {
         locationMarker.setLatLng(e.latlng).update();
     }
 });
+
+function reset(){
+    markerGroup.clearLayers();
+    nearbyVenues = [];
+    selectedVenues = [];
+    if (polyline !== undefined) {
+        map.removeLayer(polyline)
+    }
+}
