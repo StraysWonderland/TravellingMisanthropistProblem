@@ -36,7 +36,7 @@ open a browser and navigate to "http://localhost:8080/"
 
 Either allow locating via gps or click anywhere on the map to set your current location.
 
-### TPS
+### TSP
 First, press the "get nearby bars" button to retrieve nearby amenities.
 A set of markers will be placed on the map.
 Left click each marker to show a popup containing information about selected bar.
