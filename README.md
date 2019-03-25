@@ -27,7 +27,7 @@ open the "TravelingMisanthropistProblem" Folder in IntelliJ-Idea and Run it.
 - Open cmd window in that Folder,
 - type and run following command:
 
-    ./mvnw spring-boot:run 
+    ./mvnw spring-boot:run -Drun.jvmArguments="-Xmx15G" -Drun.profiles=dev
 
 
 # Using the Project
