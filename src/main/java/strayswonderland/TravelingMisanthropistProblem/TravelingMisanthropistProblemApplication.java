@@ -1,7 +1,6 @@
 package strayswonderland.TravelingMisanthropistProblem;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +32,7 @@ public class TravelingMisanthropistProblemApplication {
     String getClosestNodeToMarker(@PathVariable double[] markerNode) {
 
         int closestNodeIndex = graph.getNearestNode(markerNode);
-        double[] nodeCoords = graph.getNodeCoords(closestNodeIndex);
+        double[] nodeCoords = graph.getNodeCoodinates(closestNodeIndex);
 
         return "" + nodeCoords[0] + "-" + nodeCoords[1];
     }
