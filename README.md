@@ -8,37 +8,46 @@ For parsing refer to following git repository:
    https://github.com/StraysWonderland/TMP_Parser
    
 To run parser, place a pbf file in the root directory and name it "target.osm.pbf"
-Run the jar file either by executing or preferably by running the command:
-   java  -jar   TMP_Parser.jar
+Run the jar file preferably by running the command:
+   >  java  -jar  -Xmxs=16G TMPParser.jar
+   
+Alternatively, launch intelliJ and run the application ( set jav heapspace accordingly via Help -> customVMoptions -> Xmxs )
 
-## Implementation Details
-- Java for Backend
-- Leaflet for map visualisation
-- Javascript for map interaction
-- Java Springboot to bundle into web-application
+### Created Files
+The parser will create to files under TMPParser\ressources.
+- Rename these files to "de.osm.edges" and "de.osm.nodes".
+- Copy the files to the project directory of the actual application and place them in TravellingMisanthropistProblem\ressources. 
+( two already parsed files for bw can be found here as well )
 
-- Map-Data from OpenStreetMaps
-
-# HOW TO START THE PROJECT:
-## Method 1: IDE
+## HOW TO START THE PROJECT:
+### Method 1: IDE
 open the "TravelingMisanthropistProblem" Folder in IntelliJ-Idea and Run it.
-## Method 2: JAR
+### Method 2: JAR
 - open the "TravelingMisanthropistProblem" Folder in Explorer,
 - Open cmd window in that Folder,
 - type and run following command:
 
-    ./mvnw spring-boot:run -Drun.jvmArguments="-Xmx15G" -Drun.profiles=dev
+    > ./mvnw spring-boot:run -Drun.jvmArguments="-Xmx15G" -Drun.profiles=dev
 
 
-# Using the Project
+## Using the Project
 once the project has started,
 open a browser and navigate to "http://localhost:8080/"
 
+Either allow locating via gps or click anywhere on the map to set your current location.
 
-Place markers by left-clicking anywhere on the map.
-Currently, you can place only 3 markers and only Baden-Württemberg is supported.
-Move existing markers by dragging.
-Once youve placed your markers, select one of the two buttons on the sidebar.
+### TPS
+First, press the "get nearby bars" button to retrieve nearby amenities.
+A set of markers will be placed on the map.
+Left click each marker to show a popup containing information about selected bar.
+Right click a marker to select it as desired target of the roundtrip.
+Once you have selected more than one marker, you can press the now appearing "calculate roundtrip" and the route will be displayed.
+
+#### Ranked-TSP
+instead of selecting bars by hand, use the "Misanthropist-Roundtrip" button to generate a tour to the least visited bars, ranked via foursquare.
+
+### dijkstra.
+Place an additional marker via corresponding button, then press "calculate path" to display shortest path between both markers 
 
 ### calculate Path:
 calculates the shortest path between the first two markers
@@ -46,16 +55,17 @@ calculates the shortest path between the first two markers
 ### calculate RoundTrip
 calculates a TSP-Solution between the three markers
 
-
-## Still Missing in Current Project:
-- Parse Germany.Pbf
-- Retrieve Amenities near current location
-- Calculate TSP between all selected Markers (more than 3 ofc.)
-
-# Additional Notes:
+## Additional Notes:
 - The project contains resource files to handle Baden-Würrtemberg.
-- Germany will be handled at a later point, since when running germany in the ide, the java-heapspace needs to be allocated to more than 4GB.
+- If instead of germany, BW should be used ( when less ram is available ), rename the existing files ( in ./ressources) to "de.osm.nodes" and "de.osm.edges".
 
+## Implementation Details
+- Java for Backend
+- Leaflet for map visualisation
+- Javascript for map interaction
+- Java Springboot to bundle into web-application
+- Map-Data from OpenStreetMaps
+- Data for POIs from Foursquare API
 
 # Project Goal:
 Retrieve amenities nearby.
