@@ -12,7 +12,7 @@ markerGroup.on("contextmenu", groupRightClick);
 var numberOfRetrievedPOIS;
 var nearbyVenues = [];
 var selectedVenues = [];
-
+var selectedMarkerGroup =  L.featureGroup().addTo(map);
 
 var redIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -89,7 +89,7 @@ function GetPOIsInRangeFunction(e) {
         '&ll=' + lat + "," + lng +
         '&categoryId=' + categories,
         async: true,
-        dataType: 'jsonp',
+        dataType: 'json',
         success: function (data) {
 
             numberOfRetrievedPOIS = data.response.groups[0].items.length;
@@ -98,19 +98,19 @@ function GetPOIsInRangeFunction(e) {
             reset();
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
-                nearbyVenues.push(foundItems[i].venue);
-            }
+                var venue = foundItems[i].venue;
+                nearbyVenues.push(venue);
 
-            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
-                var venue = nearbyVenues[i];
                 var lat = venue.location.lat;
                 var lng = venue.location.lng;
-
                 var marker = new L.marker([lat, lng], {icon: redIcon}, {tooltip: venue.name});
+                marker.id = i;
+                marker.bindPopup(venue.name + "<br>" +
+                    venue.location.formattedAddress + "<br>" +
+                    'Kategorie: ' + venue.categories[0].name + "<br>" +
+                    "Aktuell hier: " + venue.hereNow.count );
 
                 marker.addTo(markerGroup);
-                marker.bindPopup(venue.name + "<br>" + venue.location.formattedAddress);
-                marker.id = i;
                 map.addLayer(marker);
             }
             console.log(nearbyVenues);
@@ -138,6 +138,27 @@ function generateRoundTripBetweenMarkers(e) {
         url: urlString,
         timeout: 20000,
         success: function (response) {
+
+            markerGroup.clearLayers();
+
+            for (var i = 0; i < selectedVenues.length; i++) {
+                var venue = selectedVenues[i];
+
+                var lat = venue.location.lat;
+                var lng = venue.location.lng;
+                var marker = new L.marker([lat, lng], {icon: greenIcon}, {tooltip: venue.name});
+                marker.bindPopup(venue.name + "<br>" +
+                    venue.location.formattedAddress + "<br>" +
+                    'Kategorie: ' + venue.categories[0].name + "<br>" +
+                    "Aktuell hier: " + venue.hereNow.count );
+
+                marker.addTo(selectedMarkerGroup);
+                map.addLayer(marker);
+            }
+
+            selectedVenues = [];
+            document.getElementById("calcRountTrip").style.visibility = "hidden";
+
             var latlngs = response.split(",").map(function (e) {
                 return e.split("_").map(Number);
             });
@@ -148,6 +169,7 @@ function generateRoundTripBetweenMarkers(e) {
                 color: linecolor
             }).addTo(map);
             map.fitBounds(polyline.getBounds());
+
 
         },
         error: function () {
@@ -160,13 +182,7 @@ function generateRoundTripBetweenMarkers(e) {
 function groupRightClick(event) {
     var marker = event.layer;
     var id = event.layer.id;
-
     marker.setIcon(greenIcon);
-    /*    map.removeLayer(marker);
-        var coords = nearbyVenues[id].getLatLng();
-        var newMarker = L.marker([coords.lat, coords.lng]);
-        newMarker.addTo(markerGroup);
-        newMarker.id = id;*/
 
     var selectedVenue = nearbyVenues[id];
     selectedVenues.push(selectedVenue);
@@ -193,6 +209,7 @@ map.on('click', function (e) {
 
 function reset() {
     markerGroup.clearLayers();
+    selectedMarkerGroup.clearLayers();
     nearbyVenues = [];
     selectedVenues = [];
     if (polyline !== undefined) {
