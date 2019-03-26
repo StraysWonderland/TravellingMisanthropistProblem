@@ -98,19 +98,19 @@ function GetPOIsInRangeFunction(e) {
             reset();
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
-                nearbyVenues.push(foundItems[i].venue);
-            }
+                var venue = foundItems[i].venue;
+                nearbyVenues.push(venue);
 
-            for (var i = 0; i < numberOfRetrievedPOIS; i++) {
-                var venue = nearbyVenues[i];
                 var lat = venue.location.lat;
                 var lng = venue.location.lng;
-
                 var marker = new L.marker([lat, lng], {icon: redIcon}, {tooltip: venue.name});
+                marker.id = i;
+                marker.bindPopup(venue.name + "<br>" +
+                    venue.location.formattedAddress + "<br>" +
+                    'Kategorie: ' + venue.categories[0].name + "<br>" +
+                    "Aktuell hier: " + venue.hereNow.count );
 
                 marker.addTo(markerGroup);
-                marker.bindPopup(venue.name + "<br>" + venue.location.formattedAddress);
-                marker.id = i;
                 map.addLayer(marker);
             }
             console.log(nearbyVenues);
@@ -162,11 +162,6 @@ function groupRightClick(event) {
     var id = event.layer.id;
 
     marker.setIcon(greenIcon);
-    /*    map.removeLayer(marker);
-        var coords = nearbyVenues[id].getLatLng();
-        var newMarker = L.marker([coords.lat, coords.lng]);
-        newMarker.addTo(markerGroup);
-        newMarker.id = id;*/
 
     var selectedVenue = nearbyVenues[id];
     selectedVenues.push(selectedVenue);
