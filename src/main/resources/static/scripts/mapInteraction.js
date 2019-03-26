@@ -73,9 +73,21 @@ function GetPOIsInRangeFunction(e) {
     var lng = locationMarker.getLatLng().lng;
     console.log(" GET POIs Called on lat: " + lat + " lng: " + lng);
 
+    var clientID = "NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM";
+    var clientSecret = "TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK";
+    var venueLimit = 25;  // limit is given to safe money, since number of free calls is limited. lel
+    var radius = 1500;
+    // Spielhalle, Weihnacthsmarkt, Nachtleben, Brennerei, Volksfest, Biershop, Gamer Cafee
+    var categories = "4bf58dd8d48988d1e1931735,52f2ab2ebcbc57f1066b8b3b,4d4b7105d754a06376d81259,4e0e22f5a56208c4ea9a85a0,4eb1daf44b900d56c88a4600,5370f356bcbc57f1066c94c2,4bf58dd8d48988d18d941735";
     $.ajax({
         type: "GET",
-        url: 'https://api.foursquare.com/v2/venues/explore?client_id=NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM&client_secret=TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK&v=20180323&limit=25&radius=1000&ll=' + lat + "," + lng + '&query=coffee',
+        url: 'https://api.foursquare.com/v2/venues/explore?client_id=' + clientID +
+        '&client_secret=' + clientSecret +
+        '&v=20180323' +
+        '&limit=' + venueLimit +
+        '&radius=' + radius +
+        '&ll=' + lat + "," + lng +
+        '&categoryId=' + categories,
         async: true,
         dataType: 'jsonp',
         success: function (data) {
@@ -159,7 +171,7 @@ function groupRightClick(event) {
     var selectedVenue = nearbyVenues[id];
     selectedVenues.push(selectedVenue);
 
-    if(selectedVenues.length > 1 && selectedVenues.length < 23){
+    if (selectedVenues.length > 1 && selectedVenues.length < 23) {
         document.getElementById("calcRountTrip").style.visibility = "visible";
     } else {
         document.getElementById("calcRountTrip").style.visibility = "hidden";
@@ -179,7 +191,7 @@ map.on('click', function (e) {
     }
 });
 
-function reset(){
+function reset() {
     markerGroup.clearLayers();
     nearbyVenues = [];
     selectedVenues = [];
