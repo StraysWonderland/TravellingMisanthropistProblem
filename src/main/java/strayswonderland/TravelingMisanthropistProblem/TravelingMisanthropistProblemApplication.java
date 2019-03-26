@@ -82,7 +82,6 @@ public class TravelingMisanthropistProblemApplication {
         return solution.toString();
     }
 
-
     private int[][] generateCostsBetweenAllTargetNodes(int nodeCount, double[][] targetNodes) {
         int[][] costs = new int[nodeCount][nodeCount];
         for (int i = 0; i < nodeCount; i++) {

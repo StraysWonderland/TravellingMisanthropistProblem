@@ -15,8 +15,8 @@ public class Graph {
 
     private HashMap<Integer, int[]> nodeGrid;
 
-    final String edgesPath = FilePaths.binBWEdges;
-    String nodesPath = FilePaths.binBWNodes;
+    final String edgesPath = FilePaths.targetEdges;
+    String nodesPath = FilePaths.targetNodes;
 
     public int[] edgeSource;
     public int[] edgeTarget;

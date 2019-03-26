@@ -2,13 +2,12 @@ package strayswonderland.TravelingMisanthropistProblem.Data;
 
 public class FilePaths {
 
-    public static final String pbfBW= "bw.osm.pbf";
-    public static final String binBWNodes = "ressources/de.osm.nodes";
-    public static final String binBWEdges = "ressources/de.osm.edges";
-    public static final String binBWOffsets = "ressources/bw.osm.offsets";
+    public static final String binBWNodes = "ressources/bw.osm.nodes";
+    public static final String binBWEdges = "ressources/bw.osm.edges";
 
-    public static final String pbfGermany = "ger.osm.pbf";
-    public static final String binGermanyNodes = "ressources/ger.osm.nodes";
-    public static final String binGermanyEdges = "ressources/ger.osm.edges";
-    public static final String binGermanyOffsets = "ressources/ger.osm.offsets";
+    public static final String binGermanyNodes = "ressources/de.osm.nodes";
+    public static final String binGermanyEdges = "ressources/de.osm.edges";
+
+    public static final String targetEdges = binGermanyEdges;
+    public static final String targetNodes = binGermanyNodes;
 }
