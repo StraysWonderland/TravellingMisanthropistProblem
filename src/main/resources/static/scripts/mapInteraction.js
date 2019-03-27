@@ -1,7 +1,7 @@
 var polyline;
 
 var targetIndex;
-var linecolor = '#2823dd';
+var linecolor = '#a81111';
 var sampleMessage;
 
 var locationMarker;
@@ -11,8 +11,8 @@ markerGroup.on("contextmenu", groupRightClick);
 // foursquare api properties
 var numberOfRetrievedPOIS;
 var nearbyVenues = [];
-var selectedVenues = [];
-var selectedMarkerGroup =  L.featureGroup().addTo(map);
+var selectedVenues = new Set();
+var selectedMarkerGroup = L.featureGroup().addTo(map);
 
 var redIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -25,6 +25,15 @@ var redIcon = new L.Icon({
 
 var greenIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var blueIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -108,7 +117,7 @@ function GetPOIsInRangeFunction(e) {
                 marker.bindPopup(venue.name + "<br>" +
                     venue.location.formattedAddress + "<br>" +
                     'Kategorie: ' + venue.categories[0].name + "<br>" +
-                    "Aktuell hier: " + venue.hereNow.count );
+                    "Aktuell hier: " + venue.hereNow.count);
 
                 marker.addTo(markerGroup);
                 map.addLayer(marker);
@@ -126,8 +135,10 @@ function generateRoundTripBetweenMarkers(e) {
     markerlats.push(locationMarker.getLatLng().lat);
     markerlngs.push(locationMarker.getLatLng().lng);
 
-    for (var i = 0; i < selectedVenues.length; i++) {
-        var venue = selectedVenues[i];
+    var selectedIds = Array.from(selectedVenues.values());
+    for (var i = 0; i < selectedIds.length; i++) {
+        var id = selectedIds[i];
+        var venue = nearbyVenues[id];
         markerlats.push(venue.location.lat);
         markerlngs.push(venue.location.lng);
     }
@@ -138,25 +149,23 @@ function generateRoundTripBetweenMarkers(e) {
         url: urlString,
         timeout: 20000,
         success: function (response) {
-
             markerGroup.clearLayers();
-
-            for (var i = 0; i < selectedVenues.length; i++) {
-                var venue = selectedVenues[i];
-
+            for (var i = 0; i < selectedIds.length; i++) {
+                var id = selectedIds[i];
+                var venue = nearbyVenues[id];
                 var lat = venue.location.lat;
                 var lng = venue.location.lng;
                 var marker = new L.marker([lat, lng], {icon: greenIcon}, {tooltip: venue.name});
                 marker.bindPopup(venue.name + "<br>" +
                     venue.location.formattedAddress + "<br>" +
                     'Kategorie: ' + venue.categories[0].name + "<br>" +
-                    "Aktuell hier: " + venue.hereNow.count );
+                    "Aktuell hier: " + venue.hereNow.count);
 
                 marker.addTo(selectedMarkerGroup);
                 map.addLayer(marker);
             }
 
-            selectedVenues = [];
+            selectedVenues = new Set();
             document.getElementById("calcRountTrip").style.visibility = "hidden";
 
             var latlngs = response.split(",").map(function (e) {
@@ -168,9 +177,6 @@ function generateRoundTripBetweenMarkers(e) {
             polyline = L.polyline(latlngs, {
                 color: linecolor
             }).addTo(map);
-            map.fitBounds(polyline.getBounds());
-
-
         },
         error: function () {
             sampleMessage = "target Index failed";
@@ -182,18 +188,20 @@ function generateRoundTripBetweenMarkers(e) {
 function groupRightClick(event) {
     var marker = event.layer;
     var id = event.layer.id;
-    marker.setIcon(greenIcon);
 
-    var selectedVenue = nearbyVenues[id];
-    selectedVenues.push(selectedVenue);
+    if(selectedVenues.has(id)){
+        marker.setIcon(redIcon);
+        selectedVenues.delete(id);
+    }else{
+        marker.setIcon(greenIcon);
+        selectedVenues.add(id);
+    }
 
-    if (selectedVenues.length > 1 && selectedVenues.length < 23) {
+    if (selectedVenues.size > 1 && selectedVenues.size < 23) {
         document.getElementById("calcRountTrip").style.visibility = "visible";
     } else {
         document.getElementById("calcRountTrip").style.visibility = "hidden";
     }
-
-
 }
 
 map.on('click', function (e) {
@@ -211,7 +219,7 @@ function reset() {
     markerGroup.clearLayers();
     selectedMarkerGroup.clearLayers();
     nearbyVenues = [];
-    selectedVenues = [];
+    selectedVenues = new Set();
     if (polyline !== undefined) {
         map.removeLayer(polyline)
     }
