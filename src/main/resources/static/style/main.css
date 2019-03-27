@@ -49,13 +49,15 @@ a, a:hover, a:focus {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #6d7fcc;
+    background: #59cc9d;
 }
 
-#sidebar #pathButton {
+#pathButton, #getNearbyPOIS, #calcRountTrip{
     margin: 1em;
     padding: 4px;
+    float: left;
 }
+
 
 #sidebar ul.components {
     padding: 20px 0;
