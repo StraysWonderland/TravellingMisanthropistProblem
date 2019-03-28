@@ -1,6 +1,6 @@
 var polyline;
 
-var targetIndex;
+
 var linecolor = '#a81111';
 var sampleMessage;
 
@@ -13,6 +13,8 @@ var numberOfRetrievedPOIS;
 var nearbyVenues = [];
 var selectedVenues = new Set();
 var selectedMarkerGroup = L.featureGroup().addTo(map);
+
+var pathMarker;
 
 var redIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -41,6 +43,15 @@ var blueIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+var yellowIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 map.locate({setView: true}).on('locationfound', function (e) {
     locationMarker = new L.marker(e.latlng, {draggable: true}).addTo(map);
 });
@@ -49,6 +60,19 @@ $("#map").bind('contextmenu', function (e) {
     return false;
 });
 
+function reset() {
+    markerGroup.clearLayers();
+    selectedMarkerGroup.clearLayers();
+    nearbyVenues = [];
+    selectedVenues = new Set();
+    if (polyline !== undefined) {
+        map.removeLayer(polyline)
+    }
+}
+
+function addAdditionalMarker() {
+
+}
 
 function CalculateSamplePath(e) {
     var startNodeCoords = [locationMarker.getLatLng().lat, locationMarker.getLatLng().lng];
@@ -189,10 +213,10 @@ function groupRightClick(event) {
     var marker = event.layer;
     var id = event.layer.id;
 
-    if(selectedVenues.has(id)){
+    if (selectedVenues.has(id)) {
         marker.setIcon(redIcon);
         selectedVenues.delete(id);
-    }else{
+    } else {
         marker.setIcon(greenIcon);
         selectedVenues.add(id);
     }
@@ -215,12 +239,3 @@ map.on('click', function (e) {
     }
 });
 
-function reset() {
-    markerGroup.clearLayers();
-    selectedMarkerGroup.clearLayers();
-    nearbyVenues = [];
-    selectedVenues = new Set();
-    if (polyline !== undefined) {
-        map.removeLayer(polyline)
-    }
-}

@@ -8,7 +8,7 @@ body {
 
 @media (max-width: 768px) {
     #sidebar {
-        margin-left: -250px;
+        margin-left: -300px;
     }
 
     #sidebar.active {
@@ -40,8 +40,8 @@ a, a:hover, a:focus {
 
 #sidebar {
     /* don't forget to add all the previously mentioned styles here too */
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 300px;
+    max-width: 300px;
     background: #333;
     color: #fff;
     transition: all 0.3s;
@@ -52,12 +52,28 @@ a, a:hover, a:focus {
     background: #59cc9d;
 }
 
-#pathButton, #getNearbyPOIS, #calcRountTrip{
-    margin: 1em;
+#getNearbyPOIS, #calcRountTrip {
+    position: relative;
+    margin: 15px;
+    padding: 4px;
+    float: left;
+    vertical-align: top;
+    display: inline-block;
+}
+
+#addNewMarkerButton {
+    position: relative;
+    margin: 15px 5px 15px 1em;
     padding: 4px;
     float: left;
 }
 
+#pathButton {
+    position: relative;
+    margin: 15px 1em 15px 5px;
+    padding: 4px;
+    float: right;
+}
 
 #sidebar ul.components {
     padding: 20px 0;
@@ -98,6 +114,7 @@ ul ul a {
     height: 1024px;
 
 }
+
 .context-menu {
     display: none;
     position: absolute;
