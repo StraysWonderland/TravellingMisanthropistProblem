@@ -23,7 +23,7 @@ public class TravelingMisanthropistProblemApplication {
         graph.loadMapData();
         SpringApplication.run(TravelingMisanthropistProblemApplication.class, args);
     }
-    
+
     @RequestMapping("/getClosestNodeToMarker/{markerNode}")
     public String getClosestNodeToMarker(@PathVariable double[] markerNode) {
         int closestNodeIndex = graph.getNearestNode(markerNode);
@@ -69,16 +69,22 @@ public class TravelingMisanthropistProblemApplication {
         return tspSolution.toString();
     }
 
+    /**
+     * Generate a distance adjacency matrix used for held-karp algorithm
+     * euclidean distance is used instead of haversine, since all nodes will be fairly close to each other,
+     * where curviture of the earth yields a negligable difference
+     * @param nodeCount
+     * @param targetNodes
+     * @return
+     */
     private int[][] generateCostsBetweenAllTargetNodes(int nodeCount, double[][] targetNodes) {
         int[][] costs = new int[nodeCount][nodeCount];
         for (int i = 0; i < nodeCount; i++) {
             for (int j = 0; j < nodeCount; j++) {
-                if (i == j) {
+                if (i == j)
                     costs[i][j] = 0;
-                } else {
-                    costs[i][j] = (int) Distance.euclideanDistance(targetNodes[i][0], targetNodes[i][1], targetNodes[j][0],
-                            targetNodes[j][1]);
-                }
+                else
+                    costs[i][j] = (int) Distance.euclideanDistance(targetNodes[i][0], targetNodes[i][1], targetNodes[j][0], targetNodes[j][1]);
             }
         }
         return costs;
