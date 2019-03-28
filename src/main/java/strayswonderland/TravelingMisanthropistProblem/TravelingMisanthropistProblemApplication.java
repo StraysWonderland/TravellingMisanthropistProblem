@@ -23,12 +23,11 @@ public class TravelingMisanthropistProblemApplication {
         graph.loadMapData();
         SpringApplication.run(TravelingMisanthropistProblemApplication.class, args);
     }
-
-
+    
     @RequestMapping("/getClosestNodeToMarker/{markerNode}")
     public String getClosestNodeToMarker(@PathVariable double[] markerNode) {
         int closestNodeIndex = graph.getNearestNode(markerNode);
-        double[] nodeCoords = graph.getNodeCoodinates(closestNodeIndex);
+        double[] nodeCoords = graph.getNodeCoordinates(closestNodeIndex);
 
         return "" + nodeCoords[0] + "-" + nodeCoords[1];
     }
