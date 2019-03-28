@@ -56,7 +56,7 @@ Once you have selected more than one marker, you can press the now appearing "ca
 #### Ranked-TSP
 instead of selecting bars by hand, use the "Misanthropist-Roundtrip" button to generate a tour to the least visited bars, ranked via foursquare.
 
-### dijkstra.
+### Dijkstra
 Place an additional marker via corresponding button, then press "calculate path" to display shortest path between both markers 
 
 ### calculate Path
