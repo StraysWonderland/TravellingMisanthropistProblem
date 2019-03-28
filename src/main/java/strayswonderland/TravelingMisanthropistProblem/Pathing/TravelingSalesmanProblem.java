@@ -5,66 +5,70 @@ import java.util.Arrays;
 
 public class TravelingSalesmanProblem {
 
+    private int pathCosts[][];
+    private int chosenNode[][];
+    private int exponent;
+    private int numberOfNodes;
+    private int edgeWeights[][];
     private ArrayList<Integer> tspSolution = new ArrayList<>();
-    private int subPathCost[][], chosenNode[][], expo, numberOfNodes, edgeWeights[][];
 
     public ArrayList<Integer> computeTSP(int[][] inputArray) {
         edgeWeights = inputArray;
         numberOfNodes = inputArray.length;
-        expo = (int) Math.pow(2, numberOfNodes);
-        subPathCost = new int[numberOfNodes][expo];
-        chosenNode = new int[numberOfNodes][expo];
+        exponent = (int) Math.pow(2, numberOfNodes);
+        pathCosts = new int[numberOfNodes][exponent];
+        chosenNode = new int[numberOfNodes][exponent];
 
         for (int i = 0; i < numberOfNodes; i++) {
-            Arrays.fill(subPathCost[i], -1);
+            Arrays.fill(pathCosts[i], -1);
             Arrays.fill(chosenNode[i], -1);
         }
 
         for (int i = 0; i < numberOfNodes; i++)
-            subPathCost[i][0] = inputArray[i][0];
+            pathCosts[i][0] = inputArray[i][0];
 
-        TravelingSalesmanProblemCalculation(0, expo - 2);
+        TravelingSalesmanProblemCalculation(0, exponent - 2);
 
         tspSolution.add(0);
-        pathCalculation(0, expo - 2);
+        recursivePathCalculation(0, exponent - 2);
         tspSolution.add(0);
 
         return tspSolution;
     }
 
     private int TravelingSalesmanProblemCalculation(int start, int currentSet) {
-        int cost = -1;
-        int tempCost, newSet, nodeMask;
+        int totalCost = -1;
+        int currentCost;
+        int nodeSet;
+        int nodeMask;
 
-        if (subPathCost[start][currentSet] != -1)
-            return subPathCost[start][currentSet];
+        if (pathCosts[start][currentSet] != -1)
+            return pathCosts[start][currentSet];
 
         for (int node = 0; node < numberOfNodes; node++) {
-            nodeMask = expo - 1 - (int) Math.pow(2, node);
-            newSet = currentSet & nodeMask;
-            if (newSet != currentSet) {
-                tempCost = edgeWeights[start][node] + TravelingSalesmanProblemCalculation(node, newSet);
-                if (cost == -1 || cost > tempCost) {
-                    cost = tempCost;
+            nodeMask = exponent - 1 - (int) Math.pow(2, node);
+            nodeSet = currentSet & nodeMask;
+            if (nodeSet != currentSet) {
+                currentCost = edgeWeights[start][node] + TravelingSalesmanProblemCalculation(node, nodeSet);
+                if (totalCost == -1 || totalCost > currentCost) {
+                    totalCost = currentCost;
                     chosenNode[start][currentSet] = node;
                 }
             }
         }
-
-        subPathCost[start][currentSet] = cost;
-        return cost;
-
+        pathCosts[start][currentSet] = totalCost;
+        return totalCost;
     }
 
-    private void pathCalculation(int start, int currentSet) {
+    private void recursivePathCalculation(int start, int currentSet) {
         if (chosenNode[start][currentSet] == -1)
             return;
 
-        int node = chosenNode[start][currentSet];
-        int nodeMask = expo - 1 - (int) Math.pow(2, node);
+        int currentNode = chosenNode[start][currentSet];
+        int nodeMask = exponent - 1 - (int) Math.pow(2, currentNode);
         int newSet = currentSet & nodeMask;
 
-        tspSolution.add(node);
-        pathCalculation(node, newSet);
+        tspSolution.add(currentNode);
+        recursivePathCalculation(currentNode, newSet);
     }
 }

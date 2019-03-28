@@ -18,19 +18,15 @@ public class TravelingMisanthropistProblemApplication {
     private static Graph graph;
 
     public static void main(String[] args) {
-
-        graph = new Graph();
-
         System.out.println(" PLEASE WAIT: LOADING MAP DATA FROM FILE. APPLICATION WILL RUN SHORTLY");
+        graph = new Graph();
         graph.loadMapData();
-
         SpringApplication.run(TravelingMisanthropistProblemApplication.class, args);
     }
 
 
     @RequestMapping("/getClosestNodeToMarker/{markerNode}")
-    String getClosestNodeToMarker(@PathVariable double[] markerNode) {
-
+    public String getClosestNodeToMarker(@PathVariable double[] markerNode) {
         int closestNodeIndex = graph.getNearestNode(markerNode);
         double[] nodeCoords = graph.getNodeCoodinates(closestNodeIndex);
 
@@ -38,25 +34,18 @@ public class TravelingMisanthropistProblemApplication {
     }
 
     @RequestMapping("/shortestPathFromTo/{start}/{target}")
-    String getShortestPathFromTo(@PathVariable double[] start, @PathVariable double[] target) {
-
+    public String getShortestPathFromTo(@PathVariable double[] start, @PathVariable double[] target) {
         int startIndex = graph.getNearestNode(start);
         int targetIndex = graph.getNearestNode(target);
 
-        double[][] visitNodes = new double[2][2];
-        visitNodes[0] = start;
-        visitNodes[1] = target;
-
-        String pathString = Pathing.getShortestPath(startIndex, targetIndex, graph);
-        return pathString;
+        return Pathing.getShortestPath(startIndex, targetIndex, graph);
     }
 
 
     @RequestMapping("/generateRoundtrip/{targetNodesLat}/{targetNodesLon}")
     public String generateRoundtripForGivenMarkers(@PathVariable double[] targetNodesLat, @PathVariable double[] targetNodesLon) {
-
+        StringBuilder tspSolution = new StringBuilder();
         double[][] nodesToVisit = new double[targetNodesLat.length][2];
-
         for (int i = 0; i < targetNodesLat.length; i++) {
             nodesToVisit[i][0] = targetNodesLat[i];
             nodesToVisit[i][1] = targetNodesLon[i];
@@ -71,15 +60,14 @@ public class TravelingMisanthropistProblemApplication {
             neighbourNodes[i] = graph.getNearestNode(nodesToVisit[i]);
         }
 
-        StringBuilder solution = new StringBuilder();
         for (int i = 0; i < result.size() - 1; i++) {
             int startNode = neighbourNodes[result.get(i)];
             int targetNode = neighbourNodes[result.get(i + 1)];
-            solution.append(Pathing.getShortestPath(startNode, targetNode, graph)).append(",");
+            tspSolution.append(Pathing.getShortestPath(startNode, targetNode, graph)).append(",");
         }
-        solution = new StringBuilder(solution.substring(0, solution.length() - 1));
 
-        return solution.toString();
+        tspSolution = new StringBuilder(tspSolution.substring(0, tspSolution.length() - 1));
+        return tspSolution.toString();
     }
 
     private int[][] generateCostsBetweenAllTargetNodes(int nodeCount, double[][] targetNodes) {
@@ -96,5 +84,6 @@ public class TravelingMisanthropistProblemApplication {
         }
         return costs;
     }
+
 }
 
