@@ -107,6 +107,22 @@ ul ul a {
     background: #6d7fcc;
 }
 
+#barList {
+    Height: 50%;
+    margin: 10px;
+    padding: 4px;
+    font-size: 12px;
+    overflow: auto;
+}
+
+#description {
+    Height: 50%;
+    bottom: 10%;
+    padding: 4px;
+    font-size: 12px;
+}
+
+
 #map {
     display: flex;
     float: left;

@@ -15,6 +15,7 @@ var selectedVenues = new Set();
 var selectedMarkerGroup = L.featureGroup().addTo(map);
 
 var pathMarker;
+var placePathMarker = false;
 
 var redIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -65,18 +66,23 @@ function reset() {
     selectedMarkerGroup.clearLayers();
     nearbyVenues = [];
     selectedVenues = new Set();
+    if (pathMarker !== undefined) {
+        map.removeLayer(pathMarker)
+        pathMarker = undefined;
+    }
     if (polyline !== undefined) {
         map.removeLayer(polyline)
     }
 }
 
 function addAdditionalMarker() {
-
+    placePathMarker = true;
+    $("#description").text("now click anywhere on the map to place your destination marker");
 }
 
 function CalculateSamplePath(e) {
     var startNodeCoords = [locationMarker.getLatLng().lat, locationMarker.getLatLng().lng];
-    var targetNodeCoords = [pathMarker2.getLatLng().lat, pathMarker2.getLatLng().lng];
+    var targetNodeCoords = [pathMarker.getLatLng().lat, pathMarker.getLatLng().lng];
 
     var urlString = "/shortestPathFromTo/" + startNodeCoords + "/" + targetNodeCoords;
     $.ajax({
@@ -93,7 +99,6 @@ function CalculateSamplePath(e) {
             polyline = L.polyline(latlngs, {
                 color: linecolor
             }).addTo(map);
-            map.fitBounds(polyline.getBounds());
         },
         error: function () {
             sampleMessage = "target Index failed"
@@ -229,13 +234,37 @@ function groupRightClick(event) {
 }
 
 map.on('click', function (e) {
-    if (typeof (locationMarker) === 'undefined') {
-        map.stopLocate();
-        locationMarker = new L.marker(e.latlng, {draggable: true});
-        locationMarker.addTo(map);
+    reset();
 
+    if (placePathMarker === true) {
+        if (typeof (pathMarker) === 'undefined') {
+            map.stopLocate();
+            pathMarker = new L.marker(e.latlng, {icon: yellowIcon}, {draggable: true});
+            pathMarker.addTo(map);
+
+        } else {
+            pathMarker.setLatLng(e.latlng).update();
+        }
+        placePathMarker = false;
+        $("#description").text(" Click anywhere on the map to set your location." +
+            "For a roundtrip across bars, press the button above to get all bars in range." +
+            "Left click on the displayed bars to show information or right click to select it for a roundtrip." +
+            "Once more than 2 Markers are selected, press the \"calculate roundtrip\" button to generate a trip along all" +
+            "selected bars. <br>" +
+            "Alternatively press the \"ranked roundtrip\" button to generate a roundtrip among the lowest ranking bars." +
+            "<br>" +
+            "For shortest path, first press the add marker button, click anywhere on the map to place a new destination" +
+            "marker" +
+            "and then calculate a path from your location to the destination by pressing the \"get path\" button.");
     } else {
-        locationMarker.setLatLng(e.latlng).update();
+        if (typeof (locationMarker) === 'undefined') {
+            map.stopLocate();
+            locationMarker = new L.marker(e.latlng, {draggable: true});
+            locationMarker.addTo(map);
+
+        } else {
+            locationMarker.setLatLng(e.latlng).update();
+        }
     }
 });
 

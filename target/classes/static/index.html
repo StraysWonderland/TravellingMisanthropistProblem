@@ -37,7 +37,7 @@
                     Style="width: 40%">
                 get Path
             </button>
-    
+
             <button type="button" id="getNearbyPOIS"
                     class="btn btn-info"
                     onclick="GetPOIsInRangeFunction()"
@@ -52,6 +52,21 @@
                 Calculate Roundtrip
             </button>
         </div>
+
+        <div id="barList" Style="display: none"></div>
+
+        <p id="description">
+            Click anywhere on the map to set your location.
+            For a roundtrip across bars, press the button above to get all bars in range.
+            Left click on the displayed bars to show information or right click to select it for a roundtrip.
+            Once more than 2 Markers are selected, press the "calculate roundtrip" button to generate a trip along all
+            selected bars. <br>
+            Alternatively press the "ranked roundtrip" button to generate a roundtrip among the lowest ranking bars.
+            <br>
+            For shortest path, first press the add marker button, click anywhere on the map to place a new destination
+            marker,
+            and then calculate a path from your location to the destination by pressing the "get path" button.
+        </p>
     </nav>
 
     <!-- Page Content -->
