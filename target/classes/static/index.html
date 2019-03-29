@@ -23,13 +23,21 @@
             <h3>Travelling Misanthropist Problem</h3>
         </div>
         <div class="col-sm-12">
+
+            <button type="button" id="addNewMarkerButton"
+                    class="btn btn-info"
+                    onclick="addAdditionalMarker()"
+                    Style="width: 40%">
+                Add Marker
+            </button>
+
             <button type="button" id="pathButton"
                     class="btn btn-info"
                     onclick="CalculateSamplePath()"
-                    Style="width: 90%">
-                calculate Path
+                    Style="width: 40%">
+                get Path
             </button>
-
+    
             <button type="button" id="getNearbyPOIS"
                     class="btn btn-info"
                     onclick="GetPOIsInRangeFunction()"
