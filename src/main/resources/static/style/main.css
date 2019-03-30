@@ -6,7 +6,7 @@ body {
     margin: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     #sidebar {
         margin-left: -300px;
     }
@@ -26,9 +26,9 @@ body {
 
 p {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 300;
-    line-height: 1.7em;
+    line-height: 1.5em;
     color: #999;
 }
 
@@ -48,11 +48,11 @@ a, a:hover, a:focus {
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    padding: 15px;
     background: #59cc9d;
 }
 
-#getNearbyPOIS, #calcRountTrip {
+#getNearbyPOIS, #calcRountTrip, #rankedRoundTrip {
     position: relative;
     margin: 15px;
     padding: 4px;
@@ -63,14 +63,14 @@ a, a:hover, a:focus {
 
 #addNewMarkerButton {
     position: relative;
-    margin: 15px 5px 15px 1em;
+    margin: 15px 5px 15px 15px;
     padding: 4px;
     float: left;
 }
 
 #pathButton {
     position: relative;
-    margin: 15px 1em 15px 5px;
+    margin: 15px 15px 15px 5px;
     padding: 4px;
     float: right;
 }
@@ -82,18 +82,7 @@ a, a:hover, a:focus {
 
 #sidebar ul p {
     color: #fff;
-    padding: 10px;
-}
-
-#sidebar ul li a {
-    padding: 10px;
-    font-size: 1.1em;
-    display: block;
-}
-
-#sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
+    padding: 4px;
 }
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
@@ -101,18 +90,40 @@ a, a:hover, a:focus {
     background: #6d7fcc;
 }
 
-ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: #6d7fcc;
-}
-
 #barList {
-    Height: 50%;
+    max-height: 450px;
+    height: 50%;
     margin: 10px;
+    top: 10px;
+    width: 95%;
     padding: 4px;
     font-size: 12px;
-    overflow: auto;
+    float: top;
+    overflow: scroll;
+    overflox-x: hidden;
+}
+
+#numberOfBarsForm {
+    position: relative;
+    margin: 10px;
+    padding: 4px;
+    float: left;
+    width: 90%;
+}
+
+#numberOfBarsForm p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.5em;
+    width: 90%;
+    color: #999;
+}
+
+#numberOfBarsInput {
+    position: relative;
+    margin: 10px;
+    float: bottom;
 }
 
 #description {
@@ -122,13 +133,11 @@ ul ul a {
     font-size: 12px;
 }
 
-
 #map {
     display: flex;
     float: left;
     width: 1980px;
     height: 1024px;
-
 }
 
 .context-menu {

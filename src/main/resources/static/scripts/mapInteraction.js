@@ -93,6 +93,11 @@ function reset() {
     if (polyline !== undefined) {
         map.removeLayer(polyline)
     }
+
+    document.getElementById("description").style.visibility = "visible";
+    document.getElementById("barList").style.display = "none";
+    document.getElementById("rankedRoundTrip").style.visibility = "hidden";
+    document.getElementById("calcRountTrip").style.visibility = "hidden";
 }
 
 /**
@@ -149,7 +154,7 @@ function GetPOIsInRangeFunction(e) {
     var clientID = "NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM";
     var clientSecret = "TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK";
     var venueLimit = 25;  // limit is given to safe money, since number of free calls is limited. lel
-    var radius = 1500;
+    var radius = 2000;
     // Spielhalle, Weihnacthsmarkt, Nachtleben, Brennerei, Volksfest, Biershop, Gamer Cafee
     var categories = "4bf58dd8d48988d1e1931735,52f2ab2ebcbc57f1066b8b3b,4d4b7105d754a06376d81259,4e0e22f5a56208c4ea9a85a0,4eb1daf44b900d56c88a4600,5370f356bcbc57f1066c94c2,4bf58dd8d48988d18d941735";
     $.ajax({
@@ -169,6 +174,8 @@ function GetPOIsInRangeFunction(e) {
             var foundItems = data.response.groups[0].items;
 
             reset();
+            document.getElementById("description").style.visibility = "hidden";
+            document.getElementById("barList").style.display = "block";
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
                 var venue = foundItems[i].venue;
@@ -185,7 +192,10 @@ function GetPOIsInRangeFunction(e) {
 
                 marker.addTo(markerGroup);
                 map.addLayer(marker);
+
+                $('#barList').append("<p>" + venue.name + "</p>");
             }
+            document.getElementById("rankedRoundTrip").style.visibility = "visible";
             console.log(nearbyVenues);
         }
     });
@@ -197,33 +207,46 @@ function GetPOIsInRangeFunction(e) {
  */
 function generateRankedRoundTrip(e) {
     rankBars();
-    // generateRoundTripBetweenMarkers(e);
+    generateRoundTripBetweenMarkers(e);
 }
 
 /**
  * sort all bars by their user rating and select the top k ones
  */
-function rankBars() {
-    for (var venue in nearbyVenues) {
-        var pageviews = articles[article]['pageviews']
-        var daycount = 0;
-        var avgViews = 0;
-        for (var day in pageviews) {
-            if (pageviews[day] != null) {
-                avgViews += pageviews[day];
-                daycount++
-            }
 
-        }
-        if (avgViews > 0) {
-            avgViews = avgViews / daycount;
-        }
-        articles[article].avgViews = avgViews;
-        rankedArticleIDs.push([article, articles[article]['avgViews']]);
+function rankBars() {
+    var ratedAmenities = [];
+    selectedVenues = new Set();
+    for (var i = 0; i < nearbyVenues.length; i++) {
+        var alpha = 1;
+        var beta = 2;
+
+        var venue = nearbyVenues[i];
+        var hereNow = venue.hereNow.count;
+        var beenHere = venue.beenHere.count;
+        var checkinsCount = venue.stats.checkinsCount;
+        var tipCount = venue.stats.tipCount;
+        var userCount = venue.stats.usersCount;
+        var visits = venue.stats.visitsCount;
+        var distance = venue.location.distance;
+        var normDist = Math.log(distance);
+
+        var ranking = (hereNow / alpha) + (beenHere + checkinsCount + tipCount + userCount + visits + normDist) / beta;
+        ratedAmenities.push([i, ranking]);
     }
-    rankedArticleIDs.sort(function (a, b) {
-        return b[1] - a[1];
+
+    // sort in ascending order
+    ratedAmenities.sort(function (a, b) {
+        return a[1] - b[1];
     });
+
+    // push bars into selected array, based on the number specified by user
+    var userInput = document.getElementById("numberOfBarsInput").value;
+    var numberOfBars = Math.min(userInput, ratedAmenities.length);
+    for (var j = 0; j < numberOfBars; j++) {
+        var venueId = ratedAmenities[j][0];
+        selectedVenues.add(venueId);
+    }
 }
 
 /**
@@ -270,6 +293,7 @@ function generateRoundTripBetweenMarkers(e) {
 
             selectedVenues = new Set();
             document.getElementById("calcRountTrip").style.visibility = "hidden";
+            document.getElementById("rankedRoundTrip").style.visibility = "hidden";
 
             var latlngs = response.split(",").map(function (e) {
                 return e.split("_").map(Number);

@@ -1,22 +1,33 @@
-var polyline;
+// text to be displayed in sidebar
+var description = " Click anywhere on the map to set your location." +
+    "For a roundtrip across bars, press the button above to get all bars in range." +
+    "Left click on any displayed bar to show details, or right click to select it for a roundtrip." +
+    "Once more than 2 Markers are selected, press \"calculate roundtrip\" button to generate trip along all selected bars. <br>" +
+    "Alternatively press \"ranked roundtrip\" button to generate roundtrip among the lowest ranking bars. <br>" +
+    "For shortest path, first press the add marker button, click anywhere on the map to place a new destination marker" +
+    "and then calculate a path from your location to the destination by pressing the \"get path\" button.";
 
-
-var linecolor = '#a81111';
-var sampleMessage;
-
+// general location and path visualisation properties
 var locationMarker;
+var polyline;
+var linecolor = '#a81111';
 
-var markerGroup = L.featureGroup().addTo(map);
-markerGroup.on("contextmenu", groupRightClick);
 // foursquare api properties
 var numberOfRetrievedPOIS;
 var nearbyVenues = [];
 var selectedVenues = new Set();
+var markerGroup = L.featureGroup().addTo(map);
+markerGroup.on("contextmenu", groupRightClick);
 var selectedMarkerGroup = L.featureGroup().addTo(map);
 
+// properties for dijkstra
 var pathMarker;
 var placePathMarker = false;
 
+// properties for sorted TSP
+var numberOfRankedBars = 15;
+
+// different icons
 var redIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -53,14 +64,23 @@ var yellowIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+/**
+ * locate current location on launch
+ */
 map.locate({setView: true}).on('locationfound', function (e) {
     locationMarker = new L.marker(e.latlng, {draggable: true}).addTo(map);
 });
 
+/**
+ * disable context menu on right click
+ */
 $("#map").bind('contextmenu', function (e) {
     return false;
 });
 
+/**
+ * Reset all properties
+ */
 function reset() {
     markerGroup.clearLayers();
     selectedMarkerGroup.clearLayers();
@@ -73,13 +93,27 @@ function reset() {
     if (polyline !== undefined) {
         map.removeLayer(polyline)
     }
+
+    document.getElementById("description").style.visibility = "visible";
+    document.getElementById("barList").style.display = "none";
+    document.getElementById("rankedRoundTrip").style.visibility = "hidden";
+    document.getElementById("calcRountTrip").style.visibility = "hidden";
 }
 
+/**
+ * set a boolean to place a marker for dijkstra on next leftClick
+ */
 function addAdditionalMarker() {
     placePathMarker = true;
     $("#description").text("now click anywhere on the map to place your destination marker");
 }
 
+/**
+ * calculate shortest path from locationMarker to pathMarker in backend
+ * visualise path
+ * @param e
+ * @constructor
+ */
 function CalculateSamplePath(e) {
     var startNodeCoords = [locationMarker.getLatLng().lat, locationMarker.getLatLng().lng];
     var targetNodeCoords = [pathMarker.getLatLng().lat, pathMarker.getLatLng().lng];
@@ -99,7 +133,6 @@ function CalculateSamplePath(e) {
             polyline = L.polyline(latlngs, {
                 color: linecolor
             }).addTo(map);
-            map.fitBounds(polyline.getBounds());
         },
         error: function () {
             sampleMessage = "target Index failed"
@@ -107,6 +140,12 @@ function CalculateSamplePath(e) {
     });
 }
 
+/**
+ * Retrieve all amenities in certain radius from foursquare API
+ * Visualise each amenity with a marker and details on popup
+ * @param e
+ * @constructor
+ */
 function GetPOIsInRangeFunction(e) {
     var lat = locationMarker.getLatLng().lat;
     var lng = locationMarker.getLatLng().lng;
@@ -115,7 +154,7 @@ function GetPOIsInRangeFunction(e) {
     var clientID = "NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM";
     var clientSecret = "TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK";
     var venueLimit = 25;  // limit is given to safe money, since number of free calls is limited. lel
-    var radius = 1500;
+    var radius = 2000;
     // Spielhalle, Weihnacthsmarkt, Nachtleben, Brennerei, Volksfest, Biershop, Gamer Cafee
     var categories = "4bf58dd8d48988d1e1931735,52f2ab2ebcbc57f1066b8b3b,4d4b7105d754a06376d81259,4e0e22f5a56208c4ea9a85a0,4eb1daf44b900d56c88a4600,5370f356bcbc57f1066c94c2,4bf58dd8d48988d18d941735";
     $.ajax({
@@ -135,6 +174,8 @@ function GetPOIsInRangeFunction(e) {
             var foundItems = data.response.groups[0].items;
 
             reset();
+            document.getElementById("description").style.visibility = "hidden";
+            document.getElementById("barList").style.display = "block";
 
             for (var i = 0; i < numberOfRetrievedPOIS; i++) {
                 var venue = foundItems[i].venue;
@@ -151,13 +192,68 @@ function GetPOIsInRangeFunction(e) {
 
                 marker.addTo(markerGroup);
                 map.addLayer(marker);
+
+                $('#barList').append("<p>" + venue.name + "</p>");
             }
+            document.getElementById("rankedRoundTrip").style.visibility = "visible";
             console.log(nearbyVenues);
         }
     });
 }
 
+/**
+ * generate a roundtrip among the top k bars with lowest ranking
+ * @param e
+ */
+function generateRankedRoundTrip(e) {
+    rankBars();
+    generateRoundTripBetweenMarkers(e);
+}
 
+/**
+ * sort all bars by their user rating and select the top k ones
+ */
+
+function rankBars() {
+    var ratedAmenities = [];
+    selectedVenues = new Set();
+    for (var i = 0; i < nearbyVenues.length; i++) {
+        var alpha = 1;
+        var beta = 2;
+
+        var venue = nearbyVenues[i];
+        var hereNow = venue.hereNow.count;
+        var beenHere = venue.beenHere.count;
+        var checkinsCount = venue.stats.checkinsCount;
+        var tipCount = venue.stats.tipCount;
+        var userCount = venue.stats.usersCount;
+        var visits = venue.stats.visitsCount;
+        var distance = venue.location.distance;
+        var normDist = Math.log(distance);
+
+        var ranking = (hereNow / alpha) + (beenHere + checkinsCount + tipCount + userCount + visits + normDist) / beta;
+        ratedAmenities.push([i, ranking]);
+    }
+
+    // sort in ascending order
+    ratedAmenities.sort(function (a, b) {
+        return a[1] - b[1];
+    });
+
+    // push bars into selected array, based on the number specified by user
+    var userInput = document.getElementById("numberOfBarsInput").value;
+    var numberOfBars = Math.min(userInput, ratedAmenities.length);
+    for (var j = 0; j < numberOfBars; j++) {
+        var venueId = ratedAmenities[j][0];
+        selectedVenues.add(venueId);
+    }
+}
+
+/**
+ * generate a TSP along all selected bars (including location) in backend.
+ * visualise result
+ * @param e
+ */
 function generateRoundTripBetweenMarkers(e) {
     var markerlats = [];
     var markerlngs = [];
@@ -197,6 +293,7 @@ function generateRoundTripBetweenMarkers(e) {
 
             selectedVenues = new Set();
             document.getElementById("calcRountTrip").style.visibility = "hidden";
+            document.getElementById("rankedRoundTrip").style.visibility = "hidden";
 
             var latlngs = response.split(",").map(function (e) {
                 return e.split("_").map(Number);
@@ -215,6 +312,11 @@ function generateRoundTripBetweenMarkers(e) {
     });
 }
 
+/**
+ * right clicking any venue-marker selects/unselects it for tsp.
+ * change icon to visualise status
+ * @param event
+ */
 function groupRightClick(event) {
     var marker = event.layer;
     var id = event.layer.id;
@@ -234,6 +336,10 @@ function groupRightClick(event) {
     }
 }
 
+/**
+ * On mouse left-click, place a marker or update lat-lng of current markers
+ * Either location- or path-marker is set, depending on the boolean value
+ */
 map.on('click', function (e) {
     reset();
 
@@ -247,16 +353,7 @@ map.on('click', function (e) {
             pathMarker.setLatLng(e.latlng).update();
         }
         placePathMarker = false;
-        $("#description").text(" Click anywhere on the map to set your location." +
-            "For a roundtrip across bars, press the button above to get all bars in range." +
-            "Left click on the displayed bars to show information or right click to select it for a roundtrip." +
-            "Once more than 2 Markers are selected, press the \"calculate roundtrip\" button to generate a trip along all" +
-            "selected bars. <br>" +
-            "Alternatively press the \"ranked roundtrip\" button to generate a roundtrip among the lowest ranking bars." +
-            "<br>" +
-            "For shortest path, first press the add marker button, click anywhere on the map to place a new destination" +
-            "marker" +
-            "and then calculate a path from your location to the destination by pressing the \"get path\" button.");
+        $("#description").text(description);
     } else {
         if (typeof (locationMarker) === 'undefined') {
             map.stopLocate();
