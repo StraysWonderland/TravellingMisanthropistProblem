@@ -1,22 +1,33 @@
-var polyline;
+// text to be displayed in sidebar
+var description = " Click anywhere on the map to set your location." +
+    "For a roundtrip across bars, press the button above to get all bars in range." +
+    "Left click on any displayed bar to show details, or right click to select it for a roundtrip." +
+    "Once more than 2 Markers are selected, press \"calculate roundtrip\" button to generate trip along all selected bars. <br>" +
+    "Alternatively press \"ranked roundtrip\" button to generate roundtrip among the lowest ranking bars. <br>" +
+    "For shortest path, first press the add marker button, click anywhere on the map to place a new destination marker" +
+    "and then calculate a path from your location to the destination by pressing the \"get path\" button.";
 
-
-var linecolor = '#a81111';
-var sampleMessage;
-
+// general location and path visualisation properties
 var locationMarker;
+var polyline;
+var linecolor = '#a81111';
 
-var markerGroup = L.featureGroup().addTo(map);
-markerGroup.on("contextmenu", groupRightClick);
 // foursquare api properties
 var numberOfRetrievedPOIS;
 var nearbyVenues = [];
 var selectedVenues = new Set();
+var markerGroup = L.featureGroup().addTo(map);
+markerGroup.on("contextmenu", groupRightClick);
 var selectedMarkerGroup = L.featureGroup().addTo(map);
 
+// properties for dijkstra
 var pathMarker;
 var placePathMarker = false;
 
+// properties for sorted TSP
+var numberOfRankedBars = 15;
+
+// different icons
 var redIcon = new L.Icon({
     iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -53,14 +64,23 @@ var yellowIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+/**
+ * locate current location on launch
+ */
 map.locate({setView: true}).on('locationfound', function (e) {
     locationMarker = new L.marker(e.latlng, {draggable: true}).addTo(map);
 });
 
+/**
+ * disable context menu on right click
+ */
 $("#map").bind('contextmenu', function (e) {
     return false;
 });
 
+/**
+ * Reset all properties
+ */
 function reset() {
     markerGroup.clearLayers();
     selectedMarkerGroup.clearLayers();
@@ -75,11 +95,20 @@ function reset() {
     }
 }
 
+/**
+ * set a boolean to place a marker for dijkstra on next leftClick
+ */
 function addAdditionalMarker() {
     placePathMarker = true;
     $("#description").text("now click anywhere on the map to place your destination marker");
 }
 
+/**
+ * calculate shortest path from locationMarker to pathMarker in backend
+ * visualise path
+ * @param e
+ * @constructor
+ */
 function CalculateSamplePath(e) {
     var startNodeCoords = [locationMarker.getLatLng().lat, locationMarker.getLatLng().lng];
     var targetNodeCoords = [pathMarker.getLatLng().lat, pathMarker.getLatLng().lng];
@@ -106,6 +135,12 @@ function CalculateSamplePath(e) {
     });
 }
 
+/**
+ * Retrieve all amenities in certain radius from foursquare API
+ * Visualise each amenity with a marker and details on popup
+ * @param e
+ * @constructor
+ */
 function GetPOIsInRangeFunction(e) {
     var lat = locationMarker.getLatLng().lat;
     var lng = locationMarker.getLatLng().lng;
@@ -156,7 +191,46 @@ function GetPOIsInRangeFunction(e) {
     });
 }
 
+/**
+ * generate a roundtrip among the top k bars with lowest ranking
+ * @param e
+ */
+function generateRankedRoundTrip(e) {
+    rankBars();
+    // generateRoundTripBetweenMarkers(e);
+}
 
+/**
+ * sort all bars by their user rating and select the top k ones
+ */
+function rankBars() {
+    for (var venue in nearbyVenues) {
+        var pageviews = articles[article]['pageviews']
+        var daycount = 0;
+        var avgViews = 0;
+        for (var day in pageviews) {
+            if (pageviews[day] != null) {
+                avgViews += pageviews[day];
+                daycount++
+            }
+
+        }
+        if (avgViews > 0) {
+            avgViews = avgViews / daycount;
+        }
+        articles[article].avgViews = avgViews;
+        rankedArticleIDs.push([article, articles[article]['avgViews']]);
+    }
+    rankedArticleIDs.sort(function (a, b) {
+        return b[1] - a[1];
+    });
+}
+
+/**
+ * generate a TSP along all selected bars (including location) in backend.
+ * visualise result
+ * @param e
+ */
 function generateRoundTripBetweenMarkers(e) {
     var markerlats = [];
     var markerlngs = [];
@@ -214,6 +288,11 @@ function generateRoundTripBetweenMarkers(e) {
     });
 }
 
+/**
+ * right clicking any venue-marker selects/unselects it for tsp.
+ * change icon to visualise status
+ * @param event
+ */
 function groupRightClick(event) {
     var marker = event.layer;
     var id = event.layer.id;
@@ -233,6 +312,10 @@ function groupRightClick(event) {
     }
 }
 
+/**
+ * On mouse left-click, place a marker or update lat-lng of current markers
+ * Either location- or path-marker is set, depending on the boolean value
+ */
 map.on('click', function (e) {
     reset();
 
@@ -246,16 +329,7 @@ map.on('click', function (e) {
             pathMarker.setLatLng(e.latlng).update();
         }
         placePathMarker = false;
-        $("#description").text(" Click anywhere on the map to set your location." +
-            "For a roundtrip across bars, press the button above to get all bars in range." +
-            "Left click on the displayed bars to show information or right click to select it for a roundtrip." +
-            "Once more than 2 Markers are selected, press the \"calculate roundtrip\" button to generate a trip along all" +
-            "selected bars. <br>" +
-            "Alternatively press the \"ranked roundtrip\" button to generate a roundtrip among the lowest ranking bars." +
-            "<br>" +
-            "For shortest path, first press the add marker button, click anywhere on the map to place a new destination" +
-            "marker" +
-            "and then calculate a path from your location to the destination by pressing the \"get path\" button.");
+        $("#description").text(description);
     } else {
         if (typeof (locationMarker) === 'undefined') {
             map.stopLocate();
