@@ -45,6 +45,17 @@
                 Get nearby bars
             </button>
 
+            <form id="numberOfBarsForm">
+                <p>Bars: <input type="number" size="2" name="numberOfBars" min="2" max="22" value="10" id="numberOfBarsInput"/></p>
+            </form>
+
+            <button type="button" id="rankedRoundTrip"
+                    onclick="generateRankedRoundTrip()"
+                    Style="width: 90%; visibility: hidden"
+                    class="btn btn-success">
+                Ranked Roundtrip
+            </button>
+
             <button type="button" id="calcRountTrip"
                     onclick="generateRoundTripBetweenMarkers()"
                     Style="width: 90%; visibility: hidden"
