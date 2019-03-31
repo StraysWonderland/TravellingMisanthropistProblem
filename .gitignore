@@ -68,8 +68,8 @@ fabric.properties
 .idea/sonarlint
 
 #pbf and osm files
-*.osm.pbf
-*.osm.*
+de.osm.pbf
+de.osm.*
 # End of https://www.gitignore.io/api/intellij
 *jar
 target/classes/static/index.html

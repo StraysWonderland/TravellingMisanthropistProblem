@@ -7,17 +7,15 @@ Bars with a generaly low ranking should in theory be visited less.
 
 This project is split into two git repositories
 * [Parser](https://github.com/StraysWonderland/TMP_Parser)
-* [(Springboot Web) Application]()
+* [(Springboot Web) Application](https://github.com/StraysWonderland/TravellingMisanthropistProblem)
 
 ## PARSER
-For parsing refer to following [git repository](https://github.com/StraysWonderland/TravellingMisanthropistProblem)
-   
 To run parser, place a pbf file in the root directory and name it 'target.osm.pbf'.
 Run the jar file preferably by running the command:
    >  java -jar -Xmx=\<AllocatedRAM> \<JARNAME> \<name of pfb file>
    
 *   \<JARNAME> should be TMPParser.jar, lying in the root of the directory
-*   \<name of pbf file> should usually be "ger.osm.pbf" or "bw.osm.pbf"
+*   \<name of pbf file> should usually be 'ger.osm.pbf' or 'bw.osm.pbf' or define the path, if file lies somewhere else.
 *   \<allocatedRam> shout at least be 16G
 
 Example:
@@ -30,7 +28,7 @@ The parser will create to files under TMPParser\ressources.
 
 *   Rename these files to 'de.osm.edges' and 'de.osm.nodes' (only if this is not already the case)
 *   Copy the files to the project directory of the actual application and place them in TravellingMisanthropistProblem\ressources. 
-(two already parsed files for bw can be found here as well)
+(two already parsed files for stuttgart can be found here as well)
 
 ## HOW TO START THE PROJECT
 
@@ -76,7 +74,7 @@ Place an additional marker via corresponding button, then press 'calculate path'
 
 ## Additional Notes
 *   The project contains resource files to handle Baden-Würrtemberg.
-*   If instead of germany, BW should be used (when less ram is available), rename the existing files (in \./ressources) to 'de.osm.nodes' and 'de.osm.edges'.
+*   If instead of germany, Stuttgart (already existing in the repo) should be used (when less ram is available), rename the existing files (in \./ressources) to 'de.osm.nodes' and 'de.osm.edges'.
 
 ## Implementation Details
 *   Java for Backend
