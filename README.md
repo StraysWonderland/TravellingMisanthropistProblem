@@ -1,6 +1,9 @@
 # TravellingMisanthropistProblem
 
 Web application that, given a location, computes a round trip along nearby amenities based on a specified ranking.
+As misanthropist, one might want to go for a roundtrip among nearby bars but also avoid being in crowded places, and people in general, whenever possible.
+Thus, pick the bars with the lowest possiblity of being crowded.
+Bars with a generaly low ranking should in theory be visited less.
 
 ## PARSER
 For parsing refer to following [git repository](https://github.com/StraysWonderland/TMP_Parser)
@@ -58,7 +61,9 @@ Richt clicking shows following information about an amenity
 Once you have selected more than one marker, you can press the now appearing "calculate roundtrip" and the route will be displayed.
 
 #### Ranked-TSP
-instead of selecting bars by hand, use the "Misanthropist-Roundtrip" button to generate a tour to the least visited bars, ranked via foursquare.
+instead of selecting bars by hand, use the "ranked Roundtrip" button to generate a tour to the least visited bars, ranked via foursquare.
+Specify the number of bars to visit by editing "bars" input field.
+Input any number from 2 to 23.
 
 ### Dijkstra
 Place an additional marker via corresponding button, then press "calculate path" to display shortest path between both markers 
@@ -81,7 +86,20 @@ calculates a TSP-Solution between the three markers
 *   Map-Data from OpenStreetMaps
 *   Data for POIs from Foursquare API
 
-## Project Goal
-*   Retrieve amenities nearby.
+## Project Goal and Problem Definition
+### General procedure
+*   parse osm file to retrieve edges and node.
+*   read file and generate grid for fast access
+*   visualise map
+*   retrieve nearby amenities from [foursquare API](https://de.foursquare.com/)
+*   calculate dijkstra between two points
 *   Calculate TSP for selected amenities.
 *   Calculate TSP by selecting Bars with lowest rating across all possible closeby bars.
+
+### TSP
+*   Calculation via [HeldKarp](https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm) -dynamic programming- algorithm
+
+### Ranked TSP
+*   Retrieves a set of properties such as 'users that are here now', 'user rating' ... from the foursquare API
+*   Sorts retrieved amenities based on a rating generated from these properties ( the lower the amount of people currently visiting, the better)
+*   Calculate TSP along the "top" k-bars, where top refers to those with the least possibility of being crowded.
