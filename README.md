@@ -24,7 +24,7 @@ Alternatively, launch intelliJ and run the application ( set jav heapspace accor
 ### Created Files
 The parser will create to files under TMPParser\ressources.
 
-*   Rename these files to "de.osm.edges" and "de.osm.nodes"
+*   Rename these files to "de.osm.edges" and "de.osm.nodes" ( only if this is not already the case)
 *   Copy the files to the project directory of the actual application and place them in TravellingMisanthropistProblem\ressources. 
 ( two already parsed files for bw can be found here as well )
 
