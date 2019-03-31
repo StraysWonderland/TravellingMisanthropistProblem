@@ -50,7 +50,11 @@ Either allow locating via gps or click anywhere on the map to set your current l
 First, press the "get nearby bars" button to retrieve nearby amenities.
 A set of markers will be placed on the map.
 Left click each marker to show a popup containing information about selected bar.
-Right click a marker to select it as desired target of the roundtrip.
+Right click a marker to select it as desired target of the roundtrip. 
+Richt clicking shows following information about an amenity
+
+![Popup information](images/hereNow.PNG "Popup info")
+
 Once you have selected more than one marker, you can press the now appearing "calculate roundtrip" and the route will be displayed.
 
 #### Ranked-TSP
