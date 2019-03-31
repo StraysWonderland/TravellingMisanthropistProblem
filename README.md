@@ -5,8 +5,12 @@ As misanthropist, one might want to go for a roundtrip among nearby bars but als
 Thus, pick the bars with the lowest possiblity of being crowded.
 Bars with a generaly low ranking should in theory be visited less.
 
+This project is split into two git repositories
+* [Parser](https://github.com/StraysWonderland/TMP_Parser)
+* [(Springboot Web) Application]()
+
 ## PARSER
-For parsing refer to following [git repository](https://github.com/StraysWonderland/TMP_Parser)
+For parsing refer to following [git repository](https://github.com/StraysWonderland/TravellingMisanthropistProblem)
    
 To run parser, place a pbf file in the root directory and name it "target.osm.pbf"
 Run the jar file preferably by running the command:
@@ -59,7 +63,7 @@ Richt clicking shows following information about an amenity
 ![Popup information](images/hereNow.PNG "Popup info")
 
 Once you have selected more than one marker, you can press the now appearing "calculate roundtrip" and the route will be displayed.
-
+![Generated Roundtrip](images/roundtrip.PNG "Popup roundtrip")
 #### Ranked-TSP
 instead of selecting bars by hand, use the "ranked Roundtrip" button to generate a tour to the least visited bars, ranked via foursquare.
 Specify the number of bars to visit by editing "bars" input field.
@@ -68,11 +72,7 @@ Input any number from 2 to 23.
 ### Dijkstra
 Place an additional marker via corresponding button, then press "calculate path" to display shortest path between both markers 
 
-### calculate Path
-calculates the shortest path between the first two markers
-
-### calculate RoundTrip
-calculates a TSP-Solution between the three markers
+![shortest path](images/dijkstra.PNG "shortest path")
 
 ## Additional Notes
 *   The project contains resource files to handle Baden-Würrtemberg.
