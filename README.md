@@ -1,6 +1,7 @@
 # TravellingMisanthropistProblem
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2cb247439cd4468d9493897cf4561ad4)](https://app.codacy.com/app/cagri.c.tasci/TravellingMisanthropistProblem?utm_source=github.com&utm_medium=referral&utm_content=StraysWonderland/TravellingMisanthropistProblem&utm_campaign=Badge_Grade_Dashboard)
+[![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/StraysWonderland/TMP_Pitch)
 
 Web application that, given a location, computes a round trip along nearby amenities based on a specified ranking.
 As misanthropist, one might want to go for a roundtrip among nearby bars but also avoid being in crowded places, and people in general, whenever possible.
@@ -10,6 +11,8 @@ Bars with a generaly low ranking should in theory be visited less.
 This project is split into two git repositories
 * [Parser](https://github.com/StraysWonderland/TMP_Parser)
 * [(Springboot Web) Application](https://github.com/StraysWonderland/TravellingMisanthropistProblem)
+
+Access the gitpitch-presentation about this project via button above, or via the [TMP_Pitch](https://github.com/StraysWonderland/TMP_Pitch) repository.
 
 ## PARSER
 To run parser, place a pbf file in the root directory and name it 'target.osm.pbf'.
