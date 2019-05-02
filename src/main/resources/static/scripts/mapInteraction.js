@@ -151,6 +151,7 @@ function GetPOIsInRangeFunction(e) {
     var lng = locationMarker.getLatLng().lng;
     console.log(" GET POIs Called on lat: " + lat + " lng: " + lng);
 
+    //TODO: place your foursquare ID and SECRET here!
     var clientID = "NBCYTRL4YF5U05GCVWPFMEDRVLGKMHFHOPWKYEHUVLR2DPAM";
     var clientSecret = "TSO0EFXRC0ILJ04GYX1T5KWHPWQETT3MB2UTSLV005LUONHK";
     var venueLimit = 25;  // limit is given to safe money, since number of free calls is limited. lel
