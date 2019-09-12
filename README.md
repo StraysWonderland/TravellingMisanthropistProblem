@@ -18,15 +18,18 @@ Access the gitpitch-presentation about this project via button above, or via the
 ## PARSER
 To run parser, place a pbf file in the root directory and name it 'target.osm.pbf'.
 Run the jar file preferably by running the command:
-   >  java -jar -Xmx=\<AllocatedRAM> \<JARNAME> \<name of pfb file>
+   ```bash
+   java -jar -Xmx=<AllocatedRAM> <JARNAME> <name of pfb file> 
+   ```
    
 *   \<JARNAME> should be TMPParser.jar, lying in the root of the directory
 *   \<name of pbf file> should usually be 'ger.osm.pbf' or 'bw.osm.pbf' or define the path, if file lies somewhere else.
 *   \<allocatedRam> shout at least be 16G
 
 Example:
-   >  java -jar -Xmx=20G TMPParser.jar ger.osm.pbf
-
+   ```bash
+   java -jar -Xmx=20G TMPParser.jar ger.osm.pbf
+   ```
 Alternatively, launch intelliJ and run the application (set jav heapspace accordingly via Help -> customVMoptions -> Xmxs)
 
 ### Created Files
@@ -47,9 +50,9 @@ To run the code from jar
 *   open the 'TravelingMisanthropistProblem' Folder in Explorer,
 *   Open cmd window in that Folder,
 *   type and run following command:
-
-    >  ./mvnw spring-boot:run -Drun.jvmArguments="-Xmx16G" -Drun.profiles=dev
-
+   ```bash
+   ./mvnw spring-boot:run -Drun.jvmArguments="-Xmx16G" -Drun.profiles=dev
+   ```
 ## Using the Project
 once the project has started, open a browser and navigate to 
 
