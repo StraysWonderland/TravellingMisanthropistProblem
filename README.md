@@ -1,7 +1,9 @@
 # TravellingMisanthropistProblem
 [![Build Status](https://travis-ci.com/StraysWonderland/TravellingMisanthropistProblem.svg?branch=master)](https://travis-ci.com/StraysWonderland/TravellingMisanthropistProblem)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2cb247439cd4468d9493897cf4561ad4)](https://app.codacy.com/app/cagri.c.tasci/TravellingMisanthropistProblem?utm_source=github.com&utm_medium=referral&utm_content=StraysWonderland/TravellingMisanthropistProblem&utm_campaign=Badge_Grade_Dashboard)
-[![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/StraysWonderland/TMP_Pitch)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/09dd1eae38ed46bb89b6d918586fa2b0)](https://www.codacy.com/gh/StraysWonderland/TravellingMisanthropistProblem/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=StraysWonderland/TravellingMisanthropistProblem&amp;utm_campaign=Badge_Grade)
+
+# No longer valid :(
+# [![GitPitch](https://gitpitch.com/assets/badge.svg)](https://gitpitch.com/StraysWonderland/TMP_Pitch)
 
 
 Web application that, given a location, computes a round trip along nearby amenities based on a specified ranking.
